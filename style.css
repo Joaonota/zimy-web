@@ -6,12 +6,17 @@
     --primary-gradient: linear-gradient(135deg, #6A11CB 0%, #2575FC 100%);
     --accent-gradient: linear-gradient(to right, #00F2FE, #4facfe);
     --neon-blue: #00F2FE;
-    --neon-green: #00FF87;
-    --soft-red: #FF4B2B;
-    --glass-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.08);
+    --neon-green: #22C55E;
+    /* Brighter, more accessible green */
+    --soft-red: #EF4444;
+    /* Brighter red for alerts */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    /* Slightly darker cards */
+    --glass-border: rgba(255, 255, 255, 0.15);
+    /* More visible borders */
     --text-white: #FFFFFF;
-    --text-dim: rgba(255, 255, 255, 0.6);
+    --text-dim: #E5E7EB;
+    /* Even brighter gray for maximum visibility */
     --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
@@ -38,8 +43,10 @@ body {
     height: 100%;
     z-index: -1;
     overflow: hidden;
-    filter: blur(80px);
-    opacity: 0.4;
+    filter: blur(100px);
+    /* Increased blur */
+    opacity: 0.25;
+    /* Reduced overall opacity */
 }
 
 .blob {
@@ -99,9 +106,10 @@ h4,
     font-size: 1.8rem;
 }
 
-p {
+p,
+.text-muted {
     font-family: 'Poppins', sans-serif;
-    color: var(--text-dim);
+    color: var(--text-dim) !important;
     font-weight: 300;
 }
 
@@ -242,9 +250,14 @@ p {
 
 .sidebar-link:hover,
 .sidebar-link.active {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.1);
+    /* Brighter hover */
     color: var(--neon-blue);
     transform: translateX(5px);
+}
+
+.sidebar-link.active {
+    font-weight: 600;
 }
 
 /* Inputs */
@@ -271,7 +284,8 @@ p {
 }
 
 .table tr {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.04);
+    /* More visible rows */
     border-radius: 12px;
     transition: var(--transition);
 }
