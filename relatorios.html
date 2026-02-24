@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios — Zimy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ---- Filter Bar ---- */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-select {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 10px 18px;
+            color: #F9FAFB;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .filter-select option {
+            background: #121421;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+        }
+
+        /* ---- Report Card ---- */
+        .report-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.35s ease;
+        }
+
+        .report-card:hover {
+            border-color: rgba(34, 211, 238, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .report-card-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .report-card-body {
+            padding: 1.5rem 2rem;
+        }
+
+        /* ---- Mood Bar ---- */
+        .mood-bar-wrap {
+            margin-bottom: 12px;
+        }
+
+        .mood-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            margin-bottom: 5px;
+            color: var(--text-dim);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .mood-track {
+            height: 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .mood-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        /* ---- Insight Tag ---- */
+        .insight-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .tag-positive {
+            background: rgba(52, 211, 153, 0.12);
+            color: #34D399;
+            border: 1px solid rgba(52, 211, 153, 0.25);
+        }
+
+        .tag-warning {
+            background: rgba(251, 191, 36, 0.12);
+            color: #FBBF24;
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+
+        .tag-alert {
+            background: rgba(248, 113, 113, 0.12);
+            color: #F87171;
+            border: 1px solid rgba(248, 113, 113, 0.25);
+        }
+
+        /* ---- PDF Print Area ---- */
+        @media print {
+
+            .sidebar,
+            .no-print {
+                display: none !important;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 1rem !important;
+            }
+
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Decoration -->
+    <div class="bg-blobs no-print">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar no-print">
+        <div style="margin-bottom: 3rem;">
+            <a href="dashboard.html" class="navbar-brand fs-3">
+                <span style="color: var(--neon-blue);">Zi</span>my
+            </a>
+        </div>
+        <nav class="d-flex flex-column gap-1">
+            <a href="dashboard.html" class="sidebar-link">
+                <i class="fas fa-home"></i><span>Dashboard</span>
+            </a>
+            <a href="chat.html" class="sidebar-link">
+                <i class="fas fa-comment-medical"></i><span>Chat</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-users"></i><span>Pacientes</span>
+            </a>
+            <a href="relatorios.html" class="sidebar-link active">
+                <i class="fas fa-chart-pie"></i><span>Relatórios</span>
+            </a>
+        </nav>
+        <div style="margin-top: auto; padding-top: 2rem;">
+            <a href="#" id="logoutBtn" class="sidebar-link" style="color: var(--soft-red);">
+                <i class="fas fa-sign-out-alt"></i><span>Sair</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-5">
+            <div>
+                <p class="mb-1"
+                    style="font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--neon-blue);font-family:'Poppins',sans-serif;">
+                    Análise de Dados</p>
+                <h1 class="h3 mb-0 fw-bold">Relatórios Clínicos</h1>
+            </div>
+            <div class="filter-bar no-print">
+                <select class="filter-select" id="periodFilter">
+                    <option value="7">Últimos 7 dias</option>
+                    <option value="30" selected>Últimos 30 dias</option>
+                    <option value="90">Últimos 3 meses</option>
+                </select>
+                <select class="filter-select" id="patientFilter">
+                    <option value="all">Todos os pacientes</option>
+                </select>
+                <button id="downloadPdfBtn" class="btn btn-zimy-primary px-4">
+                    <i class="fas fa-file-pdf me-2"></i> Baixar PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- PDF Printable Area -->
+        <div id="reportContent">
+
+            <!-- Summary Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-6 col-xl-3">
+                    <div class="report-card text-center" style="padding:1.5rem 1rem;">
+                        <div style="font-size:2rem;font-weight:700;color:#A78BFA;">24</div>
+                        <div style="font-size:0.8rem;color:var(--text-dim);font-family:'Poppins',sans-serif;">Pacientes
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-xl-3">
+                    <div class="report-card text-center" style="padding:1.5rem 1rem;">
+                        <div style="font-size:2rem;font-weight:700;color:#60A5FA;">87%</div>
+                        <div style="font-size:0.8rem;color:var(--text-dim);font-family:'Poppins',sans-serif;">Adesão
+                            média</div>
+                    </div>
+                </div>
+                <div class="col-6 col-xl-3">
+                    <div class="report-card text-center" style="padding:1.5rem 1rem;">
+                        <div style="font-size:2rem;font-weight:700;color:#34D399;">+18%</div>
+                        <div style="font-size:0.8rem;color:var(--text-dim);font-family:'Poppins',sans-serif;">Humor
+                            médio</div>
+                    </div>
+                </div>
+                <div class="col-6 col-xl-3">
+                    <div class="report-card text-center" style="padding:1.5rem 1rem;">
+                        <div style="font-size:2rem;font-weight:700;color:#FBBF24;">142</div>
+                        <div style="font-size:0.8rem;color:var(--text-dim);font-family:'Poppins',sans-serif;">Missões
+                            concluídas</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Reports -->
+            <div id="patientReports" class="d-flex flex-column gap-4"></div>
+
+        </div><!-- end #reportContent -->
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const REPORT_DATA = {
+            1: {
+                trend: [52, 58, 65, 60, 72, 78, 80],
+                moods: { Ansiedade: 62, Calma: 78, Foco: 55, Energia: 70 },
+                insights: [
+                    { text: 'Humor melhorou 18% na semana', type: 'tag-positive', icon: 'fa-arrow-trend-up' },
+                    { text: '5 missões concluídas', type: 'tag-positive', icon: 'fa-trophy' },
+                    { text: 'Registro diário consistente', type: 'tag-positive', icon: 'fa-calendar-check' },
+                ],
+                summary: 'A paciente demonstra evolução constante. Os registros de ansiedade diminuíram progressivamente após a implementação das técnicas de TCC propostas na última sessão.'
+            },
+            2: {
+                trend: [70, 60, 45, 50, 42, 48, 40],
+                moods: { Ansiedade: 80, Calma: 30, Foco: 40, Energia: 35 },
+                insights: [
+                    { text: 'Humor em queda esta semana', type: 'tag-alert', icon: 'fa-arrow-trend-down' },
+                    { text: 'Falhou 3 missões seguidas', type: 'tag-alert', icon: 'fa-circle-xmark' },
+                    { text: 'Atenção necessária', type: 'tag-warning', icon: 'fa-triangle-exclamation' },
+                ],
+                summary: 'Paciente em estado de atenção. Há uma queda consistente no humor ao longo desta semana. Recomenda-se contato proativo e possível ajuste na frequência das sessões.'
+            },
+            3: {
+                trend: [60, 65, 70, 72, 75, 78, 82],
+                moods: { Ansiedade: 40, Calma: 75, Foco: 80, Energia: 72 },
+                insights: [
+                    { text: 'Burnout em recuperação', type: 'tag-positive', icon: 'fa-heart-pulse' },
+                    { text: 'Meta de sono atingida', type: 'tag-positive', icon: 'fa-moon' },
+                    { text: 'Alta consistência', type: 'tag-positive', icon: 'fa-star' },
+                ],
+                summary: 'Carla apresenta evolução notável. O plano de recuperação de burnout está mostrando resultados expressivos, com melhora de energia e foco nos últimos 14 dias.'
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const patients = window.Zimy.db.load('patients');
+
+            // Populate filter
+            const patFilter = document.getElementById('patientFilter');
+            patients.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id; opt.text = p.name;
+                patFilter.appendChild(opt);
+            });
+
+            renderReports(patients);
+
+            document.getElementById('patientFilter').addEventListener('change', () => {
+                const val = document.getElementById('patientFilter').value;
+                const filtered = val === 'all' ? patients : patients.filter(p => p.id === parseInt(val));
+                renderReports(filtered);
+            });
+
+            document.getElementById('downloadPdfBtn').addEventListener('click', downloadPDF);
+        });
+
+        function renderReports(patients) {
+            const container = document.getElementById('patientReports');
+            container.innerHTML = patients.map(p => {
+                const data = REPORT_DATA[p.id] || { trend: [], moods: {}, insights: [], summary: 'Sem dados suficientes.' };
+                const moodBars = Object.entries(data.moods).map(([label, val]) => `
+                    <div class="mood-bar-wrap">
+                        <div class="mood-label"><span>${label}</span><span>${val}%</span></div>
+                        <div class="mood-track">
+                            <div class="mood-fill" style="width:${val}%; background:${val > 65 ? 'linear-gradient(to right,#7C3AED,#22D3EE)' : val > 45 ? '#FBBF24' : '#F87171'};"></div>
+                        </div>
+                    </div>`).join('');
+
+                const tags = data.insights.map(i => `
+                    <span class="insight-tag ${i.type}">
+                        <i class="fas ${i.icon}"></i> ${i.text}
+                    </span>`).join('');
+
+                const barChartBars = data.trend.map((v, i) => {
+                    const days = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
+                    const color = v >= 70 ? '#34D399' : v >= 50 ? '#FBBF24' : '#F87171';
+                    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                        <div style="width:100%;height:${v}%;background:${color};opacity:0.7;border-radius:5px 5px 0 0;"></div>
+                        <span style="font-size:0.65rem;color:var(--text-dim);">${days[i]}</span>
+                    </div>`;
+                }).join('');
+
+                return `
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="font-size:2.2rem;">${p.emoji}</div>
+                            <div>
+                                <div class="fw-bold fs-5">${p.name}</div>
+                                <div style="font-size:0.82rem;color:var(--text-dim);font-family:'Poppins',sans-serif;">${p.specialty}</div>
+                            </div>
+                        </div>
+                        <span class="insight-tag ${p.status === 'online' ? 'tag-positive' : 'tag-warning'}">
+                            <i class="fas fa-circle" style="font-size:0.5rem;"></i> ${p.status}
+                        </span>
+                    </div>
+                    <div class="report-card-body">
+                        <div class="row g-4">
+                            <!-- Trend -->
+                            <div class="col-md-4">
+                                <p class="mb-2 fw-semibold" style="font-size:0.85rem;">Tendência de Humor</p>
+                                <div style="height:120px;display:flex;align-items:flex-end;gap:6px;">
+                                    ${barChartBars}
+                                </div>
+                            </div>
+                            <!-- Mood Breakdown -->
+                            <div class="col-md-4">
+                                <p class="mb-3 fw-semibold" style="font-size:0.85rem;">Dimensões Emocionais</p>
+                                ${moodBars}
+                            </div>
+                            <!-- Insights + Summary -->
+                            <div class="col-md-4">
+                                <p class="mb-3 fw-semibold" style="font-size:0.85rem;">Insights Automáticos</p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">${tags}</div>
+                                <div style="font-size:0.82rem;color:var(--text-dim);font-family:'Poppins',sans-serif;line-height:1.6;border-top:1px solid var(--glass-border);padding-top:1rem;">
+                                    ${data.summary}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function downloadPDF() {
+            const btn = document.getElementById('downloadPdfBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Gerando PDF...';
+            btn.disabled = true;
+
+            const patients = window.Zimy.db.load('patients');
+            const date = new Date().toLocaleDateString('pt-br');
+
+            // ---- Build clean white HTML for PDF ----
+            const patientSections = patients.map(p => {
+                const d = REPORT_DATA[p.id] || { trend: [], moods: {}, insights: [], summary: 'Sem dados.' };
+
+                const moodRows = Object.entries(d.moods).map(([label, val]) => {
+                    const color = val > 65 ? '#7C3AED' : val > 45 ? '#F59E0B' : '#EF4444';
+                    return `
+                    <div style="margin-bottom:10px;">
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:#374151;margin-bottom:4px;">
+                            <span>${label}</span><span style="font-weight:600;">${val}%</span>
+                        </div>
+                        <div style="height:8px;background:#E5E7EB;border-radius:8px;">
+                            <div style="height:100%;width:${val}%;background:${color};border-radius:8px;"></div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                const trendbars = d.trend.map((v, i) => {
+                    const days = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
+                    const color = v >= 70 ? '#10B981' : v >= 50 ? '#F59E0B' : '#EF4444';
+                    return `<div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px;">
+                        <div style="width:80%;height:${v * 0.6}px;background:${color};border-radius:4px 4px 0 0;"></div>
+                        <span style="font-size:9px;color:#6B7280;">${days[i]}</span>
+                    </div>`;
+                }).join('');
+
+                const tagColors = { 'tag-positive': '#10B981', 'tag-warning': '#F59E0B', 'tag-alert': '#EF4444' };
+                const insightList = d.insights.map(ins =>
+                    `<div style="font-size:11px;color:${tagColors[ins.type]};margin-bottom:4px;">▸ ${ins.text}</div>`
+                ).join('');
+
+                const statusColor = p.status === 'online' ? '#10B981' : '#9CA3AF';
+
+                return `
+                <div style="margin-bottom:28px;border:1px solid #E5E7EB;border-radius:12px;overflow:hidden;page-break-inside:avoid;">
+                    <!-- Patient header -->
+                    <div style="background:#F9FAFB;padding:14px 20px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <span style="font-size:26px;">${p.emoji}</span>
+                            <div>
+                                <div style="font-size:14px;font-weight:700;color:#111827;">${p.name}</div>
+                                <div style="font-size:11px;color:#6B7280;">${p.specialty}</div>
+                            </div>
+                        </div>
+                        <span style="font-size:11px;background:${p.status === 'online' ? '#DCFCE7' : '#F3F4F6'};color:${statusColor};padding:4px 12px;border-radius:20px;font-weight:600;">● ${p.status}</span>
+                    </div>
+                    <!-- Patient body -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;padding:16px 20px;">
+                        <!-- Trend -->
+                        <div>
+                            <div style="font-size:11px;font-weight:600;color:#374151;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em;">Tendência de Humor</div>
+                            <div style="display:flex;align-items:flex-end;height:60px;gap:4px;">${trendbars}</div>
+                        </div>
+                        <!-- Moods -->
+                        <div>
+                            <div style="font-size:11px;font-weight:600;color:#374151;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em;">Dimensões Emocionais</div>
+                            ${moodRows}
+                        </div>
+                        <!-- Insights -->
+                        <div>
+                            <div style="font-size:11px;font-weight:600;color:#374151;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em;">Insights</div>
+                            ${insightList}
+                            <div style="font-size:10px;color:#6B7280;line-height:1.5;margin-top:10px;padding-top:8px;border-top:1px solid #F3F4F6;">${d.summary}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            const htmlContent = `
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; color: #111827; padding: 24px;">
+                <!-- Header -->
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #7C3AED;">
+                    <div>
+                        <div style="font-size:22px;font-weight:800;color:#7C3AED;">Zimy</div>
+                        <div style="font-size:11px;color:#6B7280;">Ecossistema de Saúde Mental</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:13px;font-weight:600;color:#374151;">Relatório Clínico</div>
+                        <div style="font-size:11px;color:#9CA3AF;">Gerado em ${date}</div>
+                    </div>
+                </div>
+                <!-- Summary Stats -->
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">
+                    ${[['24', 'Pacientes', '#7C3AED'], ['87%', 'Adesão Média', '#2563EB'], ['+18%', 'Humor Médio', '#10B981'], ['142', 'Missões Done', '#F59E0B']].map(([val, lab, col]) => `
+                    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:10px;padding:12px;text-align:center;">
+                        <div style="font-size:20px;font-weight:700;color:${col};">${val}</div>
+                        <div style="font-size:10px;color:#6B7280;">${lab}</div>
+                    </div>`).join('')}
+                </div>
+                <!-- Per Patient -->
+                <div style="font-size:12px;font-weight:600;color:#374151;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">Relatório por Paciente</div>
+                ${patientSections}
+                <!-- Footer -->
+                <div style="text-align:center;font-size:10px;color:#9CA3AF;margin-top:20px;padding-top:12px;border-top:1px solid #F3F4F6;">
+                    Gerado pela plataforma Zimy · ${date} · Documento confidencial
+                </div>
+            </div>`;
+
+            // Create a hidden container, inject, render, then clean up
+            const container = document.createElement('div');
+            container.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;background:#fff;';
+            container.innerHTML = htmlContent;
+            document.body.appendChild(container);
+
+            const opt = {
+                margin: [0, 0, 0, 0],
+                filename: `Zimy_Relatorio_${date.replace(/\//g, '-')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(container).save().then(() => {
+                document.body.removeChild(container);
+                btn.innerHTML = '<i class="fas fa-file-pdf me-2"></i> Baixar PDF';
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+
+</html>
