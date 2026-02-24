@@ -479,21 +479,16 @@
             </div>`;
 
             // Create a hidden container, inject, render, then clean up
-            const container = document.createElement('div');
-            container.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;background:#fff;';
-            container.innerHTML = htmlContent;
-            document.body.appendChild(container);
-
             const opt = {
-                margin: [0, 0, 0, 0],
+                margin: [8, 8, 8, 8],
                 filename: `Zimy_Relatorio_${date.replace(/\//g, '-')}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(container).save().then(() => {
-                document.body.removeChild(container);
+            // Pass HTML string directly — html2pdf renders it in its own iframe (no visibility issue)
+            html2pdf().set(opt).from(htmlContent).save().then(() => {
                 btn.innerHTML = '<i class="fas fa-file-pdf me-2"></i> Baixar PDF';
                 btn.disabled = false;
             });
