@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zimy — Seu companheiro emocional inteligente</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Background Decoration -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <span style="color: var(--neon-blue);">Zi</span>my
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#app">O Aplicativo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#terapeutas">Para Terapeutas</a></li>
+                    <li class="nav-item"><a class="nav-link btn-zimy-outline ms-lg-3" href="login.html">Área do
+                            Terapeuta</a></li>
+                    <li class="nav-item"><a class="nav-link btn-zimy-primary ms-lg-3 mt-2 mt-lg-0"
+                            href="signup.html">Criar Conta</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section d-flex align-items-center" style="min-height: 100vh; padding-top: 100px;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 animate-fade-up">
+                    <h1 class="display-3 mb-4">
+                        Zimy — Seu companheiro <br>
+                        <span
+                            style="background: var(--primary-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">emocional
+                            inteligente.</span>
+                    </h1>
+                    <p class="lead mb-5">
+                        Um ecossistema completo que acompanha seu humor, hábitos e evolução emocional diariamente.
+                        Transforme seu bem-estar com a ajuda da tecnologia e de profissionais qualificados.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#" class="btn btn-zimy-primary btn-lg">
+                            <i class="fab fa-apple me-2"></i> Baixar App
+                        </a>
+                        <a href="login.html" class="btn btn-zimy-outline btn-lg">
+                            <i class="fas fa-user-md me-2"></i> Sou Terapeuta
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-5 mt-lg-0 text-center animate-fade-up" style="animation-delay: 0.2s;">
+                    <div class="mockup-container position-relative">
+                        <!-- Simulated Mockup -->
+                        <div class="glass-card d-inline-block p-2" style="border-radius: 40px;">
+                            <img src="https://via.placeholder.com/300x600/0A0E21/00F2FE?text=Zimy+Mobile+App"
+                                alt="Zimy App Mockup" class="img-fluid" style="border-radius: 35px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Features -->
+    <section id="app" class="py-5" style="background: var(--bg-darker);">
+        <div class="container py-5">
+            <div class="text-center mb-5 animate-fade-up">
+                <h2 class="display-5 mb-3">O que o <span style="color: var(--neon-blue);">App Zimy</span> faz por você?
+                </h2>
+                <p>Tecnologia a favor da sua saúde mental, em qualquer lugar.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4 animate-fade-up" style="animation-delay: 0.1s;">
+                    <div class="glass-card h-100 text-center">
+                        <i class="fas fa-smile-beam fa-3x mb-4" style="color: var(--neon-blue);"></i>
+                        <h3>Registro de Humor</h3>
+                        <p>Acompanhe suas emoções diariamente e identifique padrões ao longo do tempo.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-fade-up" style="animation-delay: 0.2s;">
+                    <div class="glass-card h-100 text-center">
+                        <i class="fas fa-gamepad fa-3x mb-4" style="color: var(--neon-green);"></i>
+                        <h3>Missões & Gamificação</h3>
+                        <p>Complete desafios que promovem hábitos saudáveis e ganhe recompensas no app.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-fade-up" style="animation-delay: 0.3s;">
+                    <div class="glass-card h-100 text-center">
+                        <i class="fas fa-robot fa-3x mb-4" style="color: var(--primary-gradient);"></i>
+                        <h3>Mascote Interativo</h3>
+                        <p>Seu assistente emocional que evolui junto com o seu progresso pessoal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Patient Journey -->
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-5 mb-lg-0">
+                    <h2 class="display-5 mb-4">Como o Paciente Evolui</h2>
+                    <ul class="list-unstyled">
+                        <li class="d-flex mb-4">
+                            <div class="me-3 btn-zimy-primary rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 50px; height: 50px; flex-shrink: 0;">1</div>
+                            <div>
+                                <h4>Registra Emoções</h4>
+                                <p>O paciente faz check-ins rápidos durante o dia.</p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-4">
+                            <div class="me-3 btn-zimy-primary rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 50px; height: 50px; flex-shrink: 0;">2</div>
+                            <div>
+                                <h4>Completa Desafios</h4>
+                                <p>Atividades baseadas em TCC e meditação.</p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-4">
+                            <div class="me-3 btn-zimy-primary rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 50px; height: 50px; flex-shrink: 0;">3</div>
+                            <div>
+                                <h4>Recebe Insights</h4>
+                                <p>Relatórios automáticos sobre o estado emocional.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-7 text-center">
+                    <div class="glass-card p-4">
+                        <i class="fas fa-chart-line fa-5x mb-4" style="color: var(--neon-blue);"></i>
+                        <h3>Compartilhamento Direto</h3>
+                        <p class="mb-0">Todos os dados podem ser compartilhados com o terapeuta em tempo real para um
+                            atendimento mais profundo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Therapist Section -->
+    <section id="terapeutas" class="py-5" style="background: var(--bg-darker);">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0 animate-fade-up">
+                    <img src="https://via.placeholder.com/600x400/0A0E21/2575FC?text=Dashboard+Preview"
+                        alt="Therapist Dashboard" class="img-fluid rounded-4 shadow-lg border border-secondary">
+                </div>
+                <div class="col-lg-6 animate-fade-up" style="animation-delay: 0.2s;">
+                    <h2 class="display-5 mb-4">Uma nova forma de acompanhar seus pacientes.</h2>
+                    <p class="mb-4">Nossa plataforma para terapeutas oferece uma visão 360º do progresso emocional do
+                        paciente entre as sessões.</p>
+                    <ul class="list-unstyled mb-5">
+                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Dashboard com métricas de
+                            humor</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Chat integrado para
+                            suporte rápido</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Relatórios automáticos de
+                            evolução</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Histórico detalhado de
+                            hábitos</li>
+                    </ul>
+                    <a href="signup.html" class="btn btn-zimy-primary btn-lg">Criar Conta como Terapeuta</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-5 text-center">
+        <div class="container py-5">
+            <div class="glass-card py-5 animate-fade-up">
+                <h2 class="display-4 mb-4">Pronto para transformar vidas?</h2>
+                <p class="lead mb-5 px-md-5">Junte-se a centenas de terapeutas que já usam o Zimy para potencializar
+                    seus resultados.</p>
+                <a href="signup.html" class="btn btn-zimy-primary btn-lg" style="padding: 15px 50px;">Comece hoje —
+                    gratuito para terapeutas</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 border-top border-secondary">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <p class="mb-0">&copy; 2024 Zimy Ecosystem. Todos os direitos reservados.</p>
+            <div class="d-flex gap-4 mt-3 mt-md-0">
+                <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-white"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply reveal to sections and specific cards
+            const sections = document.querySelectorAll('section, .glass-card');
+            sections.forEach(el => {
+                el.classList.add('reveal');
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+
+</html>

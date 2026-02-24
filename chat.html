@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat — Zimy</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-main">
+
+    <!-- Background Decoration -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Sidebar (Same as Dashboard) -->
+    <div class="sidebar d-none d-lg-block">
+        <div class="px-4 mb-5">
+            <a href="dashboard.html" class="navbar-brand fs-3">
+                <span style="color: var(--neon-blue);">Zi</span>my
+            </a>
+        </div>
+        <nav>
+            <a href="dashboard.html" class="sidebar-link">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a href="chat.html" class="sidebar-link active">
+                <i class="fas fa-comment-medical"></i> <span>Chat</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-users"></i> <span>Pacientes</span>
+            </a>
+            <div class="mt-5 pt-5">
+                <a href="#" id="logoutBtn" class="sidebar-link" style="color: var(--soft-red);">
+                    <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" style="padding-top: 1rem;">
+        <div class="container-fluid p-0">
+            <div class="chat-container">
+                <!-- Patient List -->
+                <div class="patient-list">
+                    <div
+                        class="p-3 border-bottom border-light border-opacity-10 d-flex justify-content-between align-items-center">
+                        <h4 class="h6 mb-0">Conversas</h4>
+                        <button class="btn btn-sm btn-zimy-primary px-2 py-1"><i class="fas fa-plus"></i> Novo</button>
+                    </div>
+                    <div id="patientsContainer">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Chat Area -->
+                <div class="chat-area">
+                    <div class="chat-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="position-relative">
+                                <img id="activeAvatar" src="https://via.placeholder.com/45" class="rounded-circle"
+                                    alt="Patient">
+                                <div id="activeStatus"
+                                    class="position-absolute bottom-0 end-0 bg-success rounded-circle border border-dark"
+                                    style="width: 12px; height: 12px;"></div>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 h6" id="activeName">Selecione um paciente</h5>
+                                <span class="small text-muted" id="activeSpecialty">---</span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button id="genSummaryBtn" class="btn btn-zimy-outline btn-sm">
+                                <i class="fas fa-brain me-1"></i> Resumo IA
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="messages" id="messagesContainer">
+                        <div class="text-center text-muted my-auto">
+                            <i class="fas fa-comments fa-3x mb-3"></i>
+                            <p>Clique em um paciente ao lado para iniciar a conversa.</p>
+                        </div>
+                    </div>
+
+                    <form class="chat-input" id="chatForm">
+                        <input type="text" id="msgInput" placeholder="Escreva sua mensagem profissional..."
+                            autocomplete="off">
+                        <button type="submit" class="btn btn-zimy-primary"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Summary -->
+    <div class="modal fade" id="summaryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card" style="border: 1px solid var(--neon-blue);">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title"><i class="fas fa-magic text-info me-2"></i> Resumo da Conversa (Zimy AI)
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="summaryText" class="small"></p>
+                </div>
+                <div class="modal-footer border-light border-opacity-10">
+                    <button type="button" class="btn btn-zimy-outline btn-sm" id="copySummary">Copiar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let currentPatientId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPatients();
+
+            document.getElementById('chatForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                sendMessage();
+            });
+
+            document.getElementById('genSummaryBtn').addEventListener('click', generateSummary);
+            document.getElementById('copySummary').addEventListener('click', () => {
+                const text = document.getElementById('summaryText').innerText;
+                navigator.clipboard.writeText(text);
+                alert('Resumo copiado!');
+            });
+        });
+
+        function renderPatients() {
+            const patients = window.Zimy.db.load('patients');
+            const container = document.getElementById('patientsContainer');
+            container.innerHTML = patients.map(p => `
+                <div class="p-3 border-bottom border-light border-opacity-10 patient-item d-flex align-items-center gap-3" 
+                     onclick="selectPatient(${p.id})" style="cursor: pointer; transition: 0.3s;" id="p-${p.id}">
+                    <div class="fs-3">${p.emoji}</div>
+                    <div class="flex-grow-1 overflow-hidden">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 text-truncate">${p.name}</h6>
+                            <span class="small text-muted" style="font-size: 0.7rem;">${p.status === 'online' ? 'Online' : 'Offline'}</span>
+                        </div>
+                        <p class="mb-0 text-truncate small">${p.lastMsg}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectPatient(id) {
+            currentPatientId = id;
+            const patients = window.Zimy.db.load('patients');
+            const patient = patients.find(p => p.id === id);
+
+            document.getElementById('activeName').innerText = patient.name;
+            document.getElementById('activeSpecialty').innerText = patient.specialty;
+            document.querySelectorAll('.patient-item').forEach(el => el.classList.remove('bg-white', 'bg-opacity-10'));
+            document.getElementById(`p-${id}`).classList.add('bg-white', 'bg-opacity-10');
+
+            renderMessages();
+        }
+
+        function renderMessages() {
+            const chats = window.Zimy.db.load('chats');
+            const messages = chats[currentPatientId] || [];
+            const container = document.getElementById('messagesContainer');
+
+            container.innerHTML = messages.map(m => `
+                <div class="message ${m.sender === 'therapist' ? 'sent' : 'received'}">
+                    ${m.text}
+                    <div class="text-end" style="font-size: 0.65rem; opacity: 0.6; margin-top: 4px;">${m.time || '10:00'}</div>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendMessage() {
+            if (!currentPatientId) return;
+            const input = document.getElementById('msgInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chats = window.Zimy.db.load('chats');
+            if (!chats[currentPatientId]) chats[currentPatientId] = [];
+
+            const now = new Date();
+            const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+
+            chats[currentPatientId].push({ sender: 'therapist', text, time });
+            window.Zimy.db.save('chats', chats);
+
+            // Update last message in patient list
+            const patients = window.Zimy.db.load('patients');
+            const idx = patients.findIndex(p => p.id === currentPatientId);
+            patients[idx].lastMsg = "Você: " + text;
+            window.Zimy.db.save('patients', patients);
+
+            renderMessages();
+            renderPatients();
+            input.value = '';
+        }
+
+        function generateSummary() {
+            if (!currentPatientId) return;
+            const chats = window.Zimy.db.load('chats');
+            const messages = chats[currentPatientId] || [];
+            const patient = window.Zimy.db.load('patients').find(p => p.id === currentPatientId);
+
+            if (messages.length === 0) {
+                alert('Sem mensagens para resumir.');
+                return;
+            }
+
+            // Simple logic for simulation
+            const lastPatientMsg = messages.filter(m => m.sender === 'patient').pop()?.text || "N/A";
+            const summary = `Paciente ${patient.name} apresenta progresso positivo no controle de ${patient.specialty}. No último contato, relatou: "${lastPatientMsg}". Segue focada nas missões gamificadas e demonstra maior consciência emocional.`;
+
+            document.getElementById('summaryText').innerText = summary;
+            new bootstrap.Modal('#summaryModal').show();
+        }
+    </script>
+</body>
+
+</html>

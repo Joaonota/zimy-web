@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Terapeuta — Zimy</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Background Decoration -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="px-4 mb-5">
+            <a href="dashboard.html" class="navbar-brand fs-3">
+                <span style="color: var(--neon-blue);">Zi</span>my
+            </a>
+        </div>
+        <nav>
+            <a href="dashboard.html" class="sidebar-link active">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a href="chat.html" class="sidebar-link">
+                <i class="fas fa-comment-medical"></i> <span>Chat</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-users"></i> <span>Pacientes</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-chart-pie"></i> <span>Relatórios</span>
+            </a>
+            <div class="mt-5 pt-5">
+                <a href="#" id="logoutBtn" class="sidebar-link" style="color: var(--soft-red);">
+                    <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h1 class="h3 mb-1">Olá, <span id="userName">Terapeuta</span></h1>
+                <p class="mb-0">Aqui está o resumo do seu ecossistema hoje.</p>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end d-none d-md-block">
+                    <div class="fw-bold" id="userSpecialty">Psicólogo Clínico</div>
+                    <div class="small text-muted" id="userReg">CRP 00/00000</div>
+                </div>
+                <img src="https://via.placeholder.com/50" alt="Avatar" class="rounded-circle border border-primary p-1">
+                <button class="btn btn-dark d-md-none sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="btn-zimy-primary rounded-3 p-2">
+                            <i class="fas fa-user-friends fa-lg"></i>
+                        </div>
+                        <span class="text-success small fw-bold">+12% <i class="fas fa-arrow-up"></i></span>
+                    </div>
+                    <h2 class="h1">24</h2>
+                    <p class="mb-0">Pacientes Ativos</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="btn-zimy-outline rounded-3 p-2"
+                            style="border-color: var(--neon-blue); color: var(--neon-blue);">
+                            <i class="fas fa-comments fa-lg"></i>
+                        </div>
+                        <span class="text-info small fw-bold">8 novas</span>
+                    </div>
+                    <h2 class="h1">156</h2>
+                    <p class="mb-0">Conversas este mês</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="btn-zimy-outline rounded-3 p-2"
+                            style="border-color: var(--neon-green); color: var(--neon-green);">
+                            <i class="fas fa-check-circle fa-lg"></i>
+                        </div>
+                        <span class="text-muted small">Meta: 90%</span>
+                    </div>
+                    <h2 class="h1">88%</h2>
+                    <p class="mb-0">Taxa de Engajamento</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Chart Simulation -->
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="glass-card h-100">
+                    <h3 class="h5 mb-4">Atividade Emocional (Média do Grupo)</h3>
+                    <div style="height: 300px; background: linear-gradient(180deg, rgba(37, 117, 252, 0.1) 0%, transparent 100%); border-radius: 15px; position: relative;"
+                        class="d-flex align-items-end justify-content-between p-4">
+                        <!-- Simulated Chart Bars -->
+                        <div class="bg-primary opacity-50 rounded-top" style="width: 12%; height: 40%;"></div>
+                        <div class="bg-primary opacity-75 rounded-top" style="width: 12%; height: 65%;"></div>
+                        <div class="bg-info rounded-top" style="width: 12%; height: 85%;"></div>
+                        <div class="bg-primary opacity-50 rounded-top" style="width: 12%; height: 50%;"></div>
+                        <div class="bg-primary opacity-75 rounded-top" style="width: 12%; height: 75%;"></div>
+                        <div class="bg-info rounded-top" style="width: 12%; height: 95%;"></div>
+                        <div class="bg-primary rounded-top" style="width: 12%; height: 60%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3 px-4 text-muted small">
+                        <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sab</span><span>Dom</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="glass-card h-100">
+                    <h3 class="h5 mb-4">Alertas Recentes</h3>
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center gap-3 p-2 rounded-3 bg-white bg-opacity-10">
+                            <div class="bg-danger rounded-circle" style="width: 10px; height: 10px; flex-shrink: 0;">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">Bruno Souza</div>
+                                <div class="text-muted" style="font-size: 0.8rem;">Humor muito baixo hoje</div>
+                            </div>
+                            <a href="chat.html" class="btn btn-sm btn-link p-0 text-white"><i
+                                    class="fas fa-chevron-right"></i></a>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 p-2 rounded-3">
+                            <div class="bg-warning rounded-circle" style="width: 10px; height: 10px; flex-shrink: 0;">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">Ana Silva</div>
+                                <div class="text-muted" style="font-size: 0.8rem;">Nova missão concluída</div>
+                            </div>
+                            <a href="chat.html" class="btn btn-sm btn-link p-0 text-white"><i
+                                    class="fas fa-chevron-right"></i></a>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 p-2 rounded-3">
+                            <div class="bg-success rounded-circle" style="width: 10px; height: 10px; flex-shrink: 0;">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold small">Carla Lins</div>
+                                <div class="text-muted" style="font-size: 0.8rem;">Progresso constante nesta semana
+                                </div>
+                            </div>
+                            <a href="chat.html" class="btn btn-sm btn-link p-0 text-white"><i
+                                    class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Patients Table -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="glass-card">
+                    <h3 class="h5 mb-4">Pacientes Recentes</h3>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead>
+                                <tr class="text-muted small border-light border-opacity-10">
+                                    <th>Nome</th>
+                                    <th>Status</th>
+                                    <th>Última Sessão</th>
+                                    <th>Próxima</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientsTableBody">
+                                <!-- Data will be filled by script -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = window.Zimy.db.getSession();
+            if (user) {
+                document.getElementById('userName').innerText = user.name;
+                document.getElementById('userSpecialty').innerText = user.specialty;
+                document.getElementById('userReg').innerText = user.regNumber;
+            }
+
+            renderPatientsTable();
+
+            // Reveal animation for stats cards
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.classList.add('reveal');
+                setTimeout(() => card.classList.add('active'), index * 100);
+            });
+        });
+
+        function renderPatientsTable() {
+            const patients = window.Zimy.db.load('patients');
+            const tableBody = document.getElementById('patientsTableBody');
+
+            tableBody.innerHTML = patients.map(p => `
+                <tr class="align-middle border-light border-opacity-10">
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fs-4">${p.emoji}</span>
+                            <span>${p.name}</span>
+                        </div>
+                    </td>
+                    <td><span class="badge ${p.status === 'online' ? 'bg-success' : 'bg-secondary'} bg-opacity-25 text-${p.status === 'online' ? 'success' : 'secondary'} border border-${p.status === 'online' ? 'success' : 'secondary'} border-opacity-25">${p.status}</span></td>
+                    <td class="small text-muted">Ontem, 14:00</td>
+                    <td class="small">Amanhã, 09:30</td>
+                    <td>
+                        <a href="chat.html" class="btn btn-sm btn-zimy-outline px-3 py-1">Abrir Chat</a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+
+</html>
