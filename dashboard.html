@@ -4,11 +4,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Terapeuta — Zimy</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>Painel — Zimy</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.purple {
+            background: rgba(124, 58, 237, 0.2);
+            color: #A78BFA;
+        }
+
+        .stat-icon.blue {
+            background: rgba(37, 99, 235, 0.2);
+            color: #60A5FA;
+        }
+
+        .stat-icon.green {
+            background: rgba(52, 211, 153, 0.15);
+            color: #34D399;
+        }
+
+        .stat-card {
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .alert-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .chart-bar {
+            border-radius: 6px 6px 0 0;
+            transition: opacity 0.3s;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        .table-dark {
+            --bs-table-bg: transparent;
+        }
+
+        .table-hover>tbody>tr:hover>* {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .badge-status {
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .badge-online {
+            background: rgba(52, 211, 153, 0.15);
+            color: #34D399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+
+        .badge-offline {
+            background: rgba(107, 114, 128, 0.15);
+            color: #9CA3AF;
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+    </style>
 </head>
 
 <body>
@@ -21,180 +99,206 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="px-4 mb-5">
+        <div style="margin-bottom: 3rem;">
             <a href="dashboard.html" class="navbar-brand fs-3">
                 <span style="color: var(--neon-blue);">Zi</span>my
             </a>
         </div>
-        <nav>
+        <nav class="d-flex flex-column gap-1">
             <a href="dashboard.html" class="sidebar-link active">
-                <i class="fas fa-home"></i> <span>Dashboard</span>
+                <i class="fas fa-home"></i><span>Dashboard</span>
             </a>
             <a href="chat.html" class="sidebar-link">
-                <i class="fas fa-comment-medical"></i> <span>Chat</span>
+                <i class="fas fa-comment-medical"></i><span>Chat</span>
             </a>
             <a href="#" class="sidebar-link">
-                <i class="fas fa-users"></i> <span>Pacientes</span>
+                <i class="fas fa-users"></i><span>Pacientes</span>
             </a>
             <a href="#" class="sidebar-link">
-                <i class="fas fa-chart-pie"></i> <span>Relatórios</span>
+                <i class="fas fa-chart-pie"></i><span>Relatórios</span>
             </a>
-            <div class="mt-5 pt-5">
-                <a href="#" id="logoutBtn" class="sidebar-link" style="color: var(--soft-red);">
-                    <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
-                </a>
-            </div>
         </nav>
+        <div style="margin-top: auto; padding-top: 2rem;">
+            <a href="#" id="logoutBtn" class="sidebar-link" style="color: var(--soft-red);">
+                <i class="fas fa-sign-out-alt"></i><span>Sair</span>
+            </a>
+        </div>
     </div>
 
     <!-- Main Content -->
     <main class="main-content">
-        <header class="d-flex justify-content-between align-items-center mb-5">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-5">
             <div>
-                <h1 class="h3 mb-1">Olá, <span id="userName">Terapeuta</span></h1>
-                <p class="mb-0">Aqui está o resumo do seu ecossistema hoje.</p>
+                <p class="mb-1"
+                    style="font-size:0.85rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--neon-blue); font-family:'Poppins',sans-serif;">
+                    Painel do Terapeuta</p>
+                <h1 class="h3 mb-0">Olá, <span id="userName">Terapeuta</span> 👋</h1>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <div class="text-end d-none d-md-block">
-                    <div class="fw-bold" id="userSpecialty">Psicólogo Clínico</div>
-                    <div class="small text-muted" id="userReg">CRP 00/00000</div>
+                <div class="text-end d-none d-lg-block">
+                    <div class="fw-semibold" id="userSpecialty" style="font-size:0.9rem;">Especialidade</div>
+                    <div class="small" style="color: var(--text-dim);" id="userReg">CRP ---</div>
                 </div>
-                <img src="https://via.placeholder.com/50" alt="Avatar" class="rounded-circle border border-primary p-1">
-                <button class="btn btn-dark d-md-none sidebar-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <div
+                    style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#2563EB);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                    🧑‍⚕️
+                </div>
             </div>
-        </header>
+        </div>
 
-        <!-- Stats Cards -->
+        <!-- Stat Cards -->
         <div class="row g-4 mb-5">
-            <div class="col-md-4">
-                <div class="glass-card">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="btn-zimy-primary rounded-3 p-2">
-                            <i class="fas fa-user-friends fa-lg"></i>
+            <div class="col-sm-6 col-xl-4">
+                <div class="glass-card stat-card">
+                    <div class="d-flex gap-4 align-items-center">
+                        <div class="stat-icon purple"><i class="fas fa-user-friends"></i></div>
+                        <div>
+                            <div class="h2 mb-0 fw-bold">24</div>
+                            <div style="font-size:0.85rem; color:var(--text-dim);">Pacientes Ativos</div>
                         </div>
-                        <span class="text-success small fw-bold">+12% <i class="fas fa-arrow-up"></i></span>
+                        <div class="ms-auto text-success small fw-semibold">+12% <i class="fas fa-arrow-up"></i></div>
                     </div>
-                    <h2 class="h1">24</h2>
-                    <p class="mb-0">Pacientes Ativos</p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="glass-card">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="btn-zimy-outline rounded-3 p-2"
-                            style="border-color: var(--neon-blue); color: var(--neon-blue);">
-                            <i class="fas fa-comments fa-lg"></i>
+            <div class="col-sm-6 col-xl-4">
+                <div class="glass-card stat-card">
+                    <div class="d-flex gap-4 align-items-center">
+                        <div class="stat-icon blue"><i class="fas fa-comments"></i></div>
+                        <div>
+                            <div class="h2 mb-0 fw-bold">156</div>
+                            <div style="font-size:0.85rem; color:var(--text-dim);">Conversas / Mês</div>
                         </div>
-                        <span class="text-info small fw-bold">8 novas</span>
+                        <div class="ms-auto" style="font-size:0.8rem; color:#60A5FA;">8 novas</div>
                     </div>
-                    <h2 class="h1">156</h2>
-                    <p class="mb-0">Conversas este mês</p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="glass-card">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="btn-zimy-outline rounded-3 p-2"
-                            style="border-color: var(--neon-green); color: var(--neon-green);">
-                            <i class="fas fa-check-circle fa-lg"></i>
+            <div class="col-sm-6 col-xl-4">
+                <div class="glass-card stat-card">
+                    <div class="d-flex gap-4 align-items-center">
+                        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <div class="h2 mb-0 fw-bold">88%</div>
+                            <div style="font-size:0.85rem; color:var(--text-dim);">Engajamento</div>
                         </div>
-                        <span class="text-muted small">Meta: 90%</span>
+                        <div class="ms-auto" style="font-size:0.8rem; color:var(--text-dim);">Meta: 90%</div>
                     </div>
-                    <h2 class="h1">88%</h2>
-                    <p class="mb-0">Taxa de Engajamento</p>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Activity & Chart Simulation -->
-        <div class="row g-4">
+        <!-- Chart + Alerts Row -->
+        <div class="row g-4 mb-5">
+            <!-- Chart -->
             <div class="col-lg-8">
-                <div class="glass-card h-100">
-                    <h3 class="h5 mb-4">Atividade Emocional (Média do Grupo)</h3>
-                    <div style="height: 300px; background: linear-gradient(180deg, rgba(37, 117, 252, 0.1) 0%, transparent 100%); border-radius: 15px; position: relative;"
-                        class="d-flex align-items-end justify-content-between p-4">
-                        <!-- Simulated Chart Bars -->
-                        <div class="bg-primary opacity-50 rounded-top" style="width: 12%; height: 40%;"></div>
-                        <div class="bg-primary opacity-75 rounded-top" style="width: 12%; height: 65%;"></div>
-                        <div class="bg-info rounded-top" style="width: 12%; height: 85%;"></div>
-                        <div class="bg-primary opacity-50 rounded-top" style="width: 12%; height: 50%;"></div>
-                        <div class="bg-primary opacity-75 rounded-top" style="width: 12%; height: 75%;"></div>
-                        <div class="bg-info rounded-top" style="width: 12%; height: 95%;"></div>
-                        <div class="bg-primary rounded-top" style="width: 12%; height: 60%;"></div>
+                <div class="glass-card h-100" style="padding: 2rem;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0 fw-bold">Humor Médio do Grupo</h5>
+                        <span style="font-size:0.8rem; color:var(--text-dim); font-family:'Poppins',sans-serif;">Últimos
+                            7 dias</span>
                     </div>
-                    <div class="d-flex justify-content-between mt-3 px-4 text-muted small">
-                        <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sab</span><span>Dom</span>
+                    <div
+                        style="position:relative; height: 200px; display:flex; align-items:flex-end; gap:10px; padding:0 8px;">
+                        <!-- Chart Bars -->
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                            <div class="chart-bar" style="width:100%;height:40%;background:rgba(124,58,237,0.5);"></div>
+                            <span style="font-size:0.7rem;color:var(--text-dim);">Seg</span>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                            <div class="chart-bar" style="width:100%;height:65%;background:rgba(124,58,237,0.6);"></div>
+                            <span style="font-size:0.7rem;color:var(--text-dim);">Ter</span>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                            <div class="chart-bar" style="width:100%;height:80%;background:rgba(37,99,235,0.8);"></div>
+                            <span style="font-size:0.7rem;color:var(--text-dim);">Qua</span>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                            <div class="chart-bar" style="width:100%;height:55%;background:rgba(124,58,237,0.5);"></div>
+                            <span style="font-size:0.7rem;color:var(--text-dim);">Qui</span>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                            <div class="chart-bar" style="width:100%;height:90%;background:rgba(34,211,238,0.7);"></div>
+                            <span style="font-size:0.7rem;color:var(--text-dim);">Sex</span>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                            <div class="chart-bar" style="width:100%;height:70%;background:rgba(37,99,235,0.6);"></div>
+                            <span style="font-size:0.7rem;color:var(--text-dim);">Sab</span>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                            <div class="chart-bar" style="width:100%;height:85%;background:rgba(34,211,238,0.8);"></div>
+                            <span style="font-size:0.7rem;color:var(--text-dim);">Dom</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Alerts -->
             <div class="col-lg-4">
-                <div class="glass-card h-100">
-                    <h3 class="h5 mb-4">Alertas Recentes</h3>
+                <div class="glass-card h-100" style="padding: 2rem;">
+                    <h5 class="mb-4 fw-bold">Alertas</h5>
                     <div class="d-flex flex-column gap-3">
-                        <div class="d-flex align-items-center gap-3 p-2 rounded-3 bg-white bg-opacity-10">
-                            <div class="bg-danger rounded-circle" style="width: 10px; height: 10px; flex-shrink: 0;">
-                            </div>
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3"
+                            style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.2);">
+                            <div class="alert-dot" style="background:#F87171;"></div>
                             <div class="flex-grow-1">
-                                <div class="fw-bold small">Bruno Souza</div>
-                                <div class="text-muted" style="font-size: 0.8rem;">Humor muito baixo hoje</div>
+                                <div class="fw-semibold" style="font-size:0.9rem;">Bruno Souza</div>
+                                <div style="font-size:0.78rem; color:var(--text-dim);">Humor muito baixo hoje</div>
                             </div>
-                            <a href="chat.html" class="btn btn-sm btn-link p-0 text-white"><i
-                                    class="fas fa-chevron-right"></i></a>
+                            <a href="chat.html" class="text-white opacity-50"><i class="fas fa-chevron-right"></i></a>
                         </div>
-                        <div class="d-flex align-items-center gap-3 p-2 rounded-3">
-                            <div class="bg-warning rounded-circle" style="width: 10px; height: 10px; flex-shrink: 0;">
-                            </div>
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3"
+                            style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.15);">
+                            <div class="alert-dot" style="background:#FBBF24;"></div>
                             <div class="flex-grow-1">
-                                <div class="fw-bold small">Ana Silva</div>
-                                <div class="text-muted" style="font-size: 0.8rem;">Nova missão concluída</div>
+                                <div class="fw-semibold" style="font-size:0.9rem;">Ana Silva</div>
+                                <div style="font-size:0.78rem; color:var(--text-dim);">Missão concluída ✔</div>
                             </div>
-                            <a href="chat.html" class="btn btn-sm btn-link p-0 text-white"><i
-                                    class="fas fa-chevron-right"></i></a>
+                            <a href="chat.html" class="text-white opacity-50"><i class="fas fa-chevron-right"></i></a>
                         </div>
-                        <div class="d-flex align-items-center gap-3 p-2 rounded-3">
-                            <div class="bg-success rounded-circle" style="width: 10px; height: 10px; flex-shrink: 0;">
-                            </div>
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3"
+                            style="background:rgba(52,211,153,0.07); border:1px solid rgba(52,211,153,0.15);">
+                            <div class="alert-dot" style="background:#34D399;"></div>
                             <div class="flex-grow-1">
-                                <div class="fw-bold small">Carla Lins</div>
-                                <div class="text-muted" style="font-size: 0.8rem;">Progresso constante nesta semana
-                                </div>
+                                <div class="fw-semibold" style="font-size:0.9rem;">Carla Lins</div>
+                                <div style="font-size:0.78rem; color:var(--text-dim);">Progresso constante 🔥</div>
                             </div>
-                            <a href="chat.html" class="btn btn-sm btn-link p-0 text-white"><i
-                                    class="fas fa-chevron-right"></i></a>
+                            <a href="chat.html" class="text-white opacity-50"><i class="fas fa-chevron-right"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Patients Table -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="glass-card">
-                    <h3 class="h5 mb-4">Pacientes Recentes</h3>
-                    <div class="table-responsive">
-                        <table class="table table-dark table-hover mb-0">
-                            <thead>
-                                <tr class="text-muted small border-light border-opacity-10">
-                                    <th>Nome</th>
-                                    <th>Status</th>
-                                    <th>Última Sessão</th>
-                                    <th>Próxima</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="patientsTableBody">
-                                <!-- Data will be filled by script -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- Patients Table -->
+        <div class="glass-card" style="padding: 2rem;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0 fw-bold">Pacientes Recentes</h5>
+                <a href="chat.html" class="btn btn-zimy-outline btn-sm px-3">Ver todos</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0">
+                    <thead>
+                        <tr style="border-bottom:1px solid var(--glass-border);">
+                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
+                                Paciente</th>
+                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
+                                Status</th>
+                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
+                                Especialidade</th>
+                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
+                                Última Sessão</th>
+                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientsTableBody"></tbody>
+                </table>
             </div>
         </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -204,35 +308,34 @@
                 document.getElementById('userSpecialty').innerText = user.specialty;
                 document.getElementById('userReg').innerText = user.regNumber;
             }
-
             renderPatientsTable();
 
-            // Reveal animation for stats cards
-            const cards = document.querySelectorAll('.glass-card');
-            cards.forEach((card, index) => {
-                card.classList.add('reveal');
-                setTimeout(() => card.classList.add('active'), index * 100);
+            // Stagger card entrance
+            document.querySelectorAll('.glass-card').forEach((card, i) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, i * 80);
             });
         });
 
         function renderPatientsTable() {
             const patients = window.Zimy.db.load('patients');
-            const tableBody = document.getElementById('patientsTableBody');
-
-            tableBody.innerHTML = patients.map(p => `
-                <tr class="align-middle border-light border-opacity-10">
-                    <td>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="fs-4">${p.emoji}</span>
-                            <span>${p.name}</span>
+            document.getElementById('patientsTableBody').innerHTML = patients.map(p => `
+                <tr>
+                    <td style="padding:1rem 0;">
+                        <div class="d-flex align-items-center gap-3">
+                            <span style="font-size:1.6rem;">${p.emoji}</span>
+                            <span class="fw-semibold">${p.name}</span>
                         </div>
                     </td>
-                    <td><span class="badge ${p.status === 'online' ? 'bg-success' : 'bg-secondary'} bg-opacity-25 text-${p.status === 'online' ? 'success' : 'secondary'} border border-${p.status === 'online' ? 'success' : 'secondary'} border-opacity-25">${p.status}</span></td>
-                    <td class="small text-muted">Ontem, 14:00</td>
-                    <td class="small">Amanhã, 09:30</td>
-                    <td>
-                        <a href="chat.html" class="btn btn-sm btn-zimy-outline px-3 py-1">Abrir Chat</a>
-                    </td>
+                    <td><span class="badge-status ${p.status === 'online' ? 'badge-online' : 'badge-offline'}">${p.status}</span></td>
+                    <td style="color:var(--text-dim);font-size:0.88rem;">${p.specialty}</td>
+                    <td style="color:var(--text-dim);font-size:0.88rem;">Ontem, 14:00</td>
+                    <td><a href="chat.html" class="btn btn-zimy-outline btn-sm px-3 py-1">Abrir Chat</a></td>
                 </tr>
             `).join('');
         }
