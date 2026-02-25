@@ -5,75 +5,365 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zimy — Seu companheiro emocional inteligente</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== LANDING-SPECIFIC OVERRIDES ===== */
+
+        /* Dark sections */
+        .section-dark {
+            background-color: #0B0D17;
+        }
+
+        /* Slightly lighter dark */
+        .section-mid {
+            background-color: #111320;
+        }
+
+        /* Accent glowing divider */
+        .divider-glow {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #7C3AED, #22D3EE, transparent);
+            border: none;
+            margin: 0;
+        }
+
+        /* Readable paragraph override for landing */
+        .landing-p {
+            font-family: 'Poppins', sans-serif;
+            color: #C9D1DE;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        /* Feature card */
+        .feature-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            transition: all 0.35s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: rgba(124, 58, 237, 0.4);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .feature-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #F9FAFB;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-desc {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            color: #9CA3AF;
+            line-height: 1.7;
+        }
+
+        /* Step item */
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .step-num {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7C3AED, #2563EB);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5);
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .step-desc {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            color: #9CA3AF;
+        }
+
+        /* Therapist benefit row */
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .benefit-item:hover {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+
+        .benefit-icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        /* Navbar link fix for landing */
+        .navbar .nav-link {
+            color: #D1D5DB !important;
+        }
+
+        .navbar .nav-link:hover {
+            color: #22D3EE !important;
+        }
+
+        /* FAQ Accordion */
+        .accordion-item {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 14px !important;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .accordion-button {
+            background: transparent !important;
+            color: #F9FAFB !important;
+            font-weight: 600;
+            box-shadow: none !important;
+        }
+
+        .accordion-button::after {
+            filter: invert(1);
+        }
+
+        .accordion-body {
+            background: transparent;
+            color: #9CA3AF;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* Stats bar */
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #7C3AED, #22D3EE);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #9CA3AF;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
 
-<body>
+<body style="background:#0B0D17;">
 
-    <!-- Background Decoration -->
+    <!-- Background blobs (subtle) -->
     <div class="bg-blobs">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
 
-    <!-- Navbar -->
+    <!-- ===== NAVBAR ===== -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <span style="color: var(--neon-blue);">Zi</span>my
+            <a class="navbar-brand fw-800" href="index.html" style="font-size:1.7rem;font-weight:800;">
+                <span style="color:#22D3EE;">Zi</span><span style="color:#fff;">my</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <i class="fas fa-bars text-white"></i>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="#app">O Aplicativo</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#terapeutas">Para Terapeutas</a></li>
-                    <li class="nav-item"><a class="nav-link btn-zimy-outline ms-lg-3" href="login.html">Área do
-                            Terapeuta</a></li>
-                    <li class="nav-item"><a class="nav-link btn-zimy-primary ms-lg-3 mt-2 mt-lg-0"
-                            href="signup.html">Criar Conta</a></li>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-center gap-1">
+                    <li class="nav-item"><a class="nav-link px-3" href="#app">O App</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#como-funciona">Como Funciona</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#terapeutas">Terapeutas</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#faq">FAQ</a></li>
+                    <li class="nav-item ms-2"><a href="login.html" class="btn btn-zimy-outline btn-sm px-4">Entrar</a>
+                    </li>
+                    <li class="nav-item ms-2"><a href="signup.html" class="btn btn-zimy-primary btn-sm px-4">Criar
+                            Conta</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section d-flex align-items-center" style="min-height: 100vh; padding-top: 100px;">
+    <!-- ===== HERO ===== -->
+    <section style="min-height:100vh; display:flex; align-items:center; padding-top:90px;">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-6 animate-fade-up">
-                    <h1 class="display-3 mb-4">
-                        Zimy — Seu companheiro <br>
+                <div class="col-lg-6 pb-5 pb-lg-0 reveal">
+                    <div class="mb-3">
                         <span
-                            style="background: var(--primary-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">emocional
+                            style="background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:#A78BFA;padding:6px 16px;border-radius:30px;font-size:0.82rem;font-family:'Poppins',sans-serif;font-weight:500;">
+                            🧠 Ecossistema de Saúde Mental Inteligente
+                        </span>
+                    </div>
+                    <h1
+                        style="font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;line-height:1.15;color:#F9FAFB;margin-bottom:1.5rem;">
+                        Zimy — Seu companheiro
+                        <span
+                            style="background:linear-gradient(135deg,#7C3AED,#22D3EE);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">emocional
                             inteligente.</span>
                     </h1>
-                    <p class="lead mb-5">
-                        Um ecossistema completo que acompanha seu humor, hábitos e evolução emocional diariamente.
-                        Transforme seu bem-estar com a ajuda da tecnologia e de profissionais qualificados.
+                    <p class="landing-p mb-5" style="font-size:1.1rem;max-width:520px;">
+                        Um aplicativo mobile que acompanha o seu <strong style="color:#F9FAFB;">humor, hábitos e
+                            evolução emocional</strong> diariamente — conectando pacientes e terapeutas como nunca
+                        antes.
                     </p>
-                    <div class="d-flex gap-3 flex-wrap">
+                    <div class="d-flex flex-wrap gap-3">
                         <a href="#" class="btn btn-zimy-primary btn-lg">
-                            <i class="fab fa-apple me-2"></i> Baixar App
+                            <i class="fab fa-google-play me-2"></i> Baixar App
                         </a>
                         <a href="login.html" class="btn btn-zimy-outline btn-lg">
                             <i class="fas fa-user-md me-2"></i> Sou Terapeuta
                         </a>
                     </div>
+                    <!-- Trust badges -->
+                    <div class="d-flex align-items-center gap-3 mt-4">
+                        <div style="font-size:0.8rem;color:#6B7280;font-family:'Poppins',sans-serif;">Confiado por</div>
+                        <div style="font-size:0.85rem;font-weight:600;color:#9CA3AF;">+500 terapeutas</div>
+                        <div style="width:4px;height:4px;border-radius:50%;background:#4B5563;"></div>
+                        <div style="font-size:0.85rem;font-weight:600;color:#9CA3AF;">+2.000 pacientes</div>
+                    </div>
                 </div>
-                <div class="col-lg-6 mt-5 mt-lg-0 text-center animate-fade-up" style="animation-delay: 0.2s;">
-                    <div class="mockup-container position-relative">
-                        <!-- Simulated Mockup -->
-                        <div class="glass-card d-inline-block p-2" style="border-radius: 40px;">
-                            <img src="https://via.placeholder.com/300x600/0A0E21/00F2FE?text=Zimy+Mobile+App"
-                                alt="Zimy App Mockup" class="img-fluid" style="border-radius: 35px;">
+                <div class="col-lg-6 text-center reveal" style="transition-delay:0.15s;">
+                    <!-- Simulated phone mockup -->
+                    <div style="position:relative;display:inline-block;">
+                        <div
+                            style="width:280px;height:560px;background:linear-gradient(160deg,#1a1d35,#0B0D17);border-radius:45px;border:2px solid rgba(255,255,255,0.12);padding:20px;margin:auto;box-shadow:0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(124,58,237,0.2);">
+                            <!-- Phone screen -->
+                            <div
+                                style="background:#121421;border-radius:30px;height:100%;overflow:hidden;display:flex;flex-direction:column;">
+                                <!-- Status bar -->
+                                <div
+                                    style="background:#1a1d35;padding:10px 18px;display:flex;justify-content:space-between;align-items:center;">
+                                    <span style="font-size:0.7rem;color:#9CA3AF;">9:41</span>
+                                    <span style="font-size:1rem;font-weight:800;color:#22D3EE;">Zimy</span>
+                                    <span style="font-size:0.7rem;color:#9CA3AF;">😊</span>
+                                </div>
+                                <!-- App content simulation -->
+                                <div style="padding:18px;flex:1;display:flex;flex-direction:column;gap:14px;">
+                                    <div style="font-size:0.85rem;font-weight:700;color:#F9FAFB;">Olá, Ana! 👋</div>
+                                    <div style="font-size:0.72rem;color:#9CA3AF;font-family:'Poppins',sans-serif;">Como
+                                        você está se sentindo hoje?</div>
+                                    <!-- Mood selector -->
+                                    <div style="display:flex;justify-content:space-between;">
+                                        <span style="font-size:1.6rem;cursor:pointer;">😢</span>
+                                        <span style="font-size:1.6rem;cursor:pointer;">😕</span>
+                                        <span
+                                            style="font-size:1.8rem;cursor:pointer;filter:drop-shadow(0 0 8px #22D3EE);">😊</span>
+                                        <span style="font-size:1.6rem;cursor:pointer;">😄</span>
+                                        <span style="font-size:1.6rem;cursor:pointer;">🤩</span>
+                                    </div>
+                                    <!-- Progress -->
+                                    <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;">
+                                        <div style="font-size:0.72rem;color:#A78BFA;font-weight:600;margin-bottom:8px;">
+                                            🏆 Missão do dia</div>
+                                        <div style="font-size:0.78rem;color:#D1D5DB;">Exercício de respiração 5min</div>
+                                        <div
+                                            style="background:rgba(255,255,255,0.08);border-radius:8px;height:6px;margin-top:8px;">
+                                            <div
+                                                style="width:70%;height:100%;background:linear-gradient(to right,#7C3AED,#22D3EE);border-radius:8px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Chart sim -->
+                                    <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;">
+                                        <div
+                                            style="font-size:0.72rem;color:#9CA3AF;margin-bottom:8px;font-family:'Poppins',sans-serif;">
+                                            Humor esta semana</div>
+                                        <div style="display:flex;align-items:flex-end;height:40px;gap:4px;">
+                                            <div
+                                                style="flex:1;background:#7C3AED;opacity:0.5;border-radius:3px;height:40%;">
+                                            </div>
+                                            <div
+                                                style="flex:1;background:#7C3AED;opacity:0.6;border-radius:3px;height:65%;">
+                                            </div>
+                                            <div
+                                                style="flex:1;background:#22D3EE;opacity:0.8;border-radius:3px;height:80%;">
+                                            </div>
+                                            <div
+                                                style="flex:1;background:#7C3AED;opacity:0.5;border-radius:3px;height:55%;">
+                                            </div>
+                                            <div
+                                                style="flex:1;background:#22D3EE;opacity:0.9;border-radius:3px;height:90%;">
+                                            </div>
+                                            <div
+                                                style="flex:1;background:#7C3AED;opacity:0.7;border-radius:3px;height:70%;">
+                                            </div>
+                                            <div
+                                                style="flex:1;background:#10B981;opacity:1;border-radius:3px;height:100%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Mascot -->
+                                    <div style="text-align:center;margin-top:auto;">
+                                        <div style="font-size:2.5rem;">🤖</div>
+                                        <div style="font-size:0.68rem;color:#9CA3AF;font-family:'Poppins',sans-serif;">
+                                            Zimi diz: Você foi incrível hoje!</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -81,163 +371,434 @@
         </div>
     </section>
 
-    <!-- App Features -->
-    <section id="app" class="py-5" style="background: var(--bg-darker);">
-        <div class="container py-5">
-            <div class="text-center mb-5 animate-fade-up">
-                <h2 class="display-5 mb-3">O que o <span style="color: var(--neon-blue);">App Zimy</span> faz por você?
-                </h2>
-                <p>Tecnologia a favor da sua saúde mental, em qualquer lugar.</p>
+    <hr class="divider-glow">
+
+    <!-- ===== STATS BAR ===== -->
+    <section style="background:#111320;padding:3rem 0;">
+        <div class="container">
+            <div class="row text-center g-4">
+                <div class="col-6 col-md-3">
+                    <div class="stat-number">+500</div>
+                    <div class="stat-label">Terapeutas ativos</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-number">+2K</div>
+                    <div class="stat-label">Pacientes atendidos</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-number">87%</div>
+                    <div class="stat-label">Taxa de adesão</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-number">4.9★</div>
+                    <div class="stat-label">Avaliação média</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider-glow">
+
+    <!-- ===== APP FEATURES ===== -->
+    <section id="app" style="padding:6rem 0;background:#0B0D17;">
+        <div class="container">
+            <div class="text-center mb-5 reveal">
+                <p
+                    style="color:#A78BFA;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;font-family:'Poppins',sans-serif;font-weight:500;">
+                    📱 Aplicativo Mobile</p>
+                <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#F9FAFB;margin-bottom:1rem;">O que o
+                    App Zimy faz por você?</h2>
+                <p class="landing-p mx-auto" style="max-width:560px;">Tecnologia de ponta a favor da saúde mental,
+                    disponível a qualquer hora, em qualquer lugar.</p>
             </div>
             <div class="row g-4">
-                <div class="col-md-4 animate-fade-up" style="animation-delay: 0.1s;">
-                    <div class="glass-card h-100 text-center">
-                        <i class="fas fa-smile-beam fa-3x mb-4" style="color: var(--neon-blue);"></i>
-                        <h3>Registro de Humor</h3>
-                        <p>Acompanhe suas emoções diariamente e identifique padrões ao longo do tempo.</p>
+                <!-- Feature cards -->
+                <div class="col-sm-6 col-lg-4 reveal">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:rgba(34,211,238,0.15);color:#22D3EE;"><i
+                                class="fas fa-smile-beam"></i></div>
+                        <div class="feature-title">Registro de Humor Diário</div>
+                        <div class="feature-desc">O paciente registra como está se sentindo em segundos, com emojis e
+                            notas. O app constrói um histórico emocional automático ao longo do tempo.</div>
                     </div>
                 </div>
-                <div class="col-md-4 animate-fade-up" style="animation-delay: 0.2s;">
-                    <div class="glass-card h-100 text-center">
-                        <i class="fas fa-gamepad fa-3x mb-4" style="color: var(--neon-green);"></i>
-                        <h3>Missões & Gamificação</h3>
-                        <p>Complete desafios que promovem hábitos saudáveis e ganhe recompensas no app.</p>
+                <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.1s;">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:rgba(124,58,237,0.15);color:#A78BFA;"><i
+                                class="fas fa-gamepad"></i></div>
+                        <div class="feature-title">Missões & Gamificação</div>
+                        <div class="feature-desc">Desafios diários baseados em TCC, meditação e hábitos saudáveis. O
+                            paciente ganha pontos, badges e evolui seu mascote ao completá-los.</div>
                     </div>
                 </div>
-                <div class="col-md-4 animate-fade-up" style="animation-delay: 0.3s;">
-                    <div class="glass-card h-100 text-center">
-                        <i class="fas fa-robot fa-3x mb-4" style="color: var(--primary-gradient);"></i>
-                        <h3>Mascote Interativo</h3>
-                        <p>Seu assistente emocional que evolui junto com o seu progresso pessoal.</p>
+                <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.2s;">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:rgba(16,185,129,0.15);color:#10B981;"><i
+                                class="fas fa-robot"></i></div>
+                        <div class="feature-title">Mascote Emocional (Zimi)</div>
+                        <div class="feature-desc">Um companheiro virtual que reage ao estado emocional do usuário,
+                            oferece dicas personalizadas e evolui conforme o progresso do paciente.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4 reveal">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:rgba(245,158,11,0.15);color:#FBBF24;"><i
+                                class="fas fa-chart-area"></i></div>
+                        <div class="feature-title">Relatórios Semanais</div>
+                        <div class="feature-desc">Todo domingo, o app gera um resumo automático da semana: humor médio,
+                            missões concluídas e áreas que merecem atenção.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.1s;">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:rgba(239,68,68,0.12);color:#F87171;"><i
+                                class="fas fa-lightbulb"></i></div>
+                        <div class="feature-title">Insights Automáticos</div>
+                        <div class="feature-desc">O sistema identifica padrões emocionais como: "você tende a ter humor
+                            mais baixo às segundas-feiras" e sugere intervenções práticas.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:0.2s;">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:rgba(37,99,235,0.15);color:#60A5FA;"><i
+                                class="fas fa-share-nodes"></i></div>
+                        <div class="feature-title">Conexão com o Terapeuta</div>
+                        <div class="feature-desc">Com um clique, o paciente autoriza o acesso ao seu histórico
+                            emocional, permitindo que o terapeuta acompanhe a evolução em tempo real.</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Patient Journey -->
-    <section class="py-5">
-        <div class="container py-5">
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-5 mb-lg-0">
-                    <h2 class="display-5 mb-4">Como o Paciente Evolui</h2>
-                    <ul class="list-unstyled">
-                        <li class="d-flex mb-4">
-                            <div class="me-3 btn-zimy-primary rounded-circle d-flex align-items-center justify-content-center"
-                                style="width: 50px; height: 50px; flex-shrink: 0;">1</div>
-                            <div>
-                                <h4>Registra Emoções</h4>
-                                <p>O paciente faz check-ins rápidos durante o dia.</p>
+    <hr class="divider-glow">
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <section id="como-funciona" style="padding:6rem 0;background:#111320;">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-5 reveal">
+                    <p
+                        style="color:#A78BFA;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;font-family:'Poppins',sans-serif;font-weight:500;">
+                        🔄 Jornada do Paciente</p>
+                    <h2 style="font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;color:#F9FAFB;margin-bottom:2rem;">
+                        Como o Zimy funciona na prática?</h2>
+
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div>
+                            <div class="step-title" style="color:#F9FAFB;">Baixa o App e se Cadastra</div>
+                            <div class="step-desc">Em menos de 2 minutos, o paciente cria o perfil e conecta-se ao seu
+                                terapeuta pelo código único.</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div>
+                            <div class="step-title" style="color:#F9FAFB;">Registra o Humor Todos os Dias</div>
+                            <div class="step-desc">Uma notificação gentil lembra o usuário de fazer o check-in
+                                emocional. Leva apenas 30 segundos.</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div>
+                            <div class="step-title" style="color:#F9FAFB;">Completa Missões Terapêuticas</div>
+                            <div class="step-desc">O paciente realiza atividades como diário de gratidão, exercícios de
+                                respiração e técnicas de mindfulness.</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div>
+                            <div class="step-title" style="color:#F9FAFB;">Recebe Insights e Evolui</div>
+                            <div class="step-desc">O app analisa os dados e entrega feedback personalizados. O terapeuta
+                                acompanha tudo e pode enviar mensagens de apoio.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7 reveal" style="transition-delay:0.2s;">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="feature-card text-center" style="padding:1.5rem;">
+                                <div style="font-size:2rem;margin-bottom:0.5rem;">😊</div>
+                                <div style="font-size:0.85rem;font-weight:600;color:#F9FAFB;">Check-in de Humor</div>
+                                <div
+                                    style="font-size:0.75rem;color:#6B7280;font-family:'Poppins',sans-serif;margin-top:4px;">
+                                    Rápido e diário</div>
                             </div>
-                        </li>
-                        <li class="d-flex mb-4">
-                            <div class="me-3 btn-zimy-primary rounded-circle d-flex align-items-center justify-content-center"
-                                style="width: 50px; height: 50px; flex-shrink: 0;">2</div>
-                            <div>
-                                <h4>Completa Desafios</h4>
-                                <p>Atividades baseadas em TCC e meditação.</p>
+                        </div>
+                        <div class="col-6">
+                            <div class="feature-card text-center" style="padding:1.5rem;">
+                                <div style="font-size:2rem;margin-bottom:0.5rem;">🏆</div>
+                                <div style="font-size:0.85rem;font-weight:600;color:#F9FAFB;">Missões Gamificadas</div>
+                                <div
+                                    style="font-size:0.75rem;color:#6B7280;font-family:'Poppins',sans-serif;margin-top:4px;">
+                                    Baseadas em TCC</div>
                             </div>
-                        </li>
-                        <li class="d-flex mb-4">
-                            <div class="me-3 btn-zimy-primary rounded-circle d-flex align-items-center justify-content-center"
-                                style="width: 50px; height: 50px; flex-shrink: 0;">3</div>
-                            <div>
-                                <h4>Recebe Insights</h4>
-                                <p>Relatórios automáticos sobre o estado emocional.</p>
+                        </div>
+                        <div class="col-6">
+                            <div class="feature-card text-center" style="padding:1.5rem;">
+                                <div style="font-size:2rem;margin-bottom:0.5rem;">📊</div>
+                                <div style="font-size:0.85rem;font-weight:600;color:#F9FAFB;">Análise Emocional</div>
+                                <div
+                                    style="font-size:0.75rem;color:#6B7280;font-family:'Poppins',sans-serif;margin-top:4px;">
+                                    Tendências semanais</div>
                             </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-lg-7 text-center">
-                    <div class="glass-card p-4">
-                        <i class="fas fa-chart-line fa-5x mb-4" style="color: var(--neon-blue);"></i>
-                        <h3>Compartilhamento Direto</h3>
-                        <p class="mb-0">Todos os dados podem ser compartilhados com o terapeuta em tempo real para um
-                            atendimento mais profundo.</p>
+                        </div>
+                        <div class="col-6">
+                            <div class="feature-card text-center" style="padding:1.5rem;">
+                                <div style="font-size:2rem;margin-bottom:0.5rem;">💬</div>
+                                <div style="font-size:0.85rem;font-weight:600;color:#F9FAFB;">Chat com Terapeuta</div>
+                                <div
+                                    style="font-size:0.75rem;color:#6B7280;font-family:'Poppins',sans-serif;margin-top:4px;">
+                                    Suporte contínuo</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Therapist Section -->
-    <section id="terapeutas" class="py-5" style="background: var(--bg-darker);">
-        <div class="container py-5">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-5 mb-lg-0 animate-fade-up">
-                    <img src="https://via.placeholder.com/600x400/0A0E21/2575FC?text=Dashboard+Preview"
-                        alt="Therapist Dashboard" class="img-fluid rounded-4 shadow-lg border border-secondary">
+    <hr class="divider-glow">
+
+    <!-- ===== THERAPIST SECTION ===== -->
+    <section id="terapeutas" style="padding:6rem 0;background:#0B0D17;">
+        <div class="container">
+            <div class="text-center mb-5 reveal">
+                <p
+                    style="color:#A78BFA;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;font-family:'Poppins',sans-serif;font-weight:500;">
+                    💼 Para Terapeutas</p>
+                <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#F9FAFB;margin-bottom:1rem;">Uma
+                    nova forma de acompanhar seus pacientes.</h2>
+                <p class="landing-p mx-auto" style="max-width:600px;">O Zimy oferece um painel web exclusivo que
+                    transforma a forma como você monitora e apoia seus pacientes entre as sessões.</p>
+            </div>
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-6 reveal">
+                    <div class="benefit-item">
+                        <div class="benefit-icon" style="background:rgba(124,58,237,0.15);color:#A78BFA;"><i
+                                class="fas fa-desktop"></i></div>
+                        <div>
+                            <div style="font-weight:700;color:#F9FAFB;font-size:0.95rem;">Dashboard Profissional</div>
+                            <div style="font-size:0.82rem;color:#9CA3AF;font-family:'Poppins',sans-serif;">Visão geral
+                                de todos os pacientes: humor médio, engajamento e alertas em tempo real.</div>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon" style="background:rgba(34,211,238,0.15);color:#22D3EE;"><i
+                                class="fas fa-comment-medical"></i></div>
+                        <div>
+                            <div style="font-weight:700;color:#F9FAFB;font-size:0.95rem;">Chat Integrado</div>
+                            <div style="font-size:0.82rem;color:#9CA3AF;font-family:'Poppins',sans-serif;">Envie
+                                mensagens de apoio entre sessões. Histórico completo de cada conversa salvo
+                                automaticamente.</div>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon" style="background:rgba(16,185,129,0.12);color:#34D399;"><i
+                                class="fas fa-file-medical"></i></div>
+                        <div>
+                            <div style="font-weight:700;color:#F9FAFB;font-size:0.95rem;">Relatórios Automáticos em PDF
+                            </div>
+                            <div style="font-size:0.82rem;color:#9CA3AF;font-family:'Poppins',sans-serif;">Gere
+                                relatórios clínicos detalhados com gráficos de humor, insights e resumo por paciente —
+                                em um clique.</div>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon" style="background:rgba(245,158,11,0.12);color:#FBBF24;"><i
+                                class="fas fa-bell"></i></div>
+                        <div>
+                            <div style="font-weight:700;color:#F9FAFB;font-size:0.95rem;">Alertas de Risco</div>
+                            <div style="font-size:0.82rem;color:#9CA3AF;font-family:'Poppins',sans-serif;">Receba
+                                alertas quando um paciente apresentar quedas bruscas de humor por 3 ou mais dias
+                                seguidos.</div>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon" style="background:rgba(248,113,113,0.1);color:#F87171;"><i
+                                class="fas fa-history"></i></div>
+                        <div>
+                            <div style="font-weight:700;color:#F9FAFB;font-size:0.95rem;">Histórico Emocional Detalhado
+                            </div>
+                            <div style="font-size:0.82rem;color:#9CA3AF;font-family:'Poppins',sans-serif;">Acesse meses
+                                de registros emocionais organizados por período — perfeito para preparar sessões.</div>
+                        </div>
+                    </div>
+                    <a href="signup.html" class="btn btn-zimy-primary btn-lg mt-3 px-5">
+                        Criar Conta grátis <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
                 </div>
-                <div class="col-lg-6 animate-fade-up" style="animation-delay: 0.2s;">
-                    <h2 class="display-5 mb-4">Uma nova forma de acompanhar seus pacientes.</h2>
-                    <p class="mb-4">Nossa plataforma para terapeutas oferece uma visão 360º do progresso emocional do
-                        paciente entre as sessões.</p>
-                    <ul class="list-unstyled mb-5">
-                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Dashboard com métricas de
-                            humor</li>
-                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Chat integrado para
-                            suporte rápido</li>
-                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Relatórios automáticos de
-                            evolução</li>
-                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Histórico detalhado de
-                            hábitos</li>
-                    </ul>
-                    <a href="signup.html" class="btn btn-zimy-primary btn-lg">Criar Conta como Terapeuta</a>
+                <div class="col-lg-6 reveal text-center" style="transition-delay:0.2s;">
+                    <!-- Dashboard Preview Card -->
+                    <div
+                        style="background:#111320;border:1px solid rgba(255,255,255,0.12);border-radius:24px;padding:24px;text-align:left;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+                            <div style="font-size:1.4rem;font-weight:800;color:#22D3EE;">Zi</div>
+                            <div style="font-size:1.4rem;font-weight:800;color:#F9FAFB;">my Dashboard</div>
+                        </div>
+                        <!-- Mini patient cards -->
+                        <div style="display:flex;flex-direction:column;gap:10px;">
+                            <div
+                                style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;">
+                                <span style="font-size:1.5rem;">😊</span>
+                                <div style="flex:1;">
+                                    <div style="font-size:0.85rem;font-weight:600;color:#F9FAFB;">Ana Silva</div>
+                                    <div style="font-size:0.72rem;color:#9CA3AF;">Humor: 80% ↑</div>
+                                </div>
+                                <span
+                                    style="font-size:0.7rem;color:#34D399;background:rgba(52,211,153,0.1);padding:3px 8px;border-radius:20px;">Online</span>
+                            </div>
+                            <div
+                                style="background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;">
+                                <span style="font-size:1.5rem;">😔</span>
+                                <div style="flex:1;">
+                                    <div style="font-size:0.85rem;font-weight:600;color:#F9FAFB;">Bruno Souza</div>
+                                    <div style="font-size:0.72rem;color:#F87171;">⚠ Humor baixo — 3 dias</div>
+                                </div>
+                                <span
+                                    style="font-size:0.7rem;color:#F87171;background:rgba(248,113,113,0.1);padding:3px 8px;border-radius:20px;">Alerta</span>
+                            </div>
+                            <div
+                                style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;">
+                                <span style="font-size:1.5rem;">🔥</span>
+                                <div style="flex:1;">
+                                    <div style="font-size:0.85rem;font-weight:600;color:#F9FAFB;">Carla Lins</div>
+                                    <div style="font-size:0.72rem;color:#9CA3AF;">5 missões esta semana</div>
+                                </div>
+                                <span
+                                    style="font-size:0.7rem;color:#34D399;background:rgba(52,211,153,0.1);padding:3px 8px;border-radius:20px;">Online</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Final CTA -->
-    <section class="py-5 text-center">
-        <div class="container py-5">
-            <div class="glass-card py-5 animate-fade-up">
-                <h2 class="display-4 mb-4">Pronto para transformar vidas?</h2>
-                <p class="lead mb-5 px-md-5">Junte-se a centenas de terapeutas que já usam o Zimy para potencializar
-                    seus resultados.</p>
-                <a href="signup.html" class="btn btn-zimy-primary btn-lg" style="padding: 15px 50px;">Comece hoje —
-                    gratuito para terapeutas</a>
+    <hr class="divider-glow">
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq" style="padding:6rem 0;background:#111320;">
+        <div class="container">
+            <div class="text-center mb-5 reveal">
+                <p
+                    style="color:#A78BFA;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;font-family:'Poppins',sans-serif;font-weight:500;">
+                    ❓ Perguntas Frequentes</p>
+                <h2 style="font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;color:#F9FAFB;">Tem dúvidas? A gente
+                    explica.</h2>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8 reveal">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq1">
+                                    O Zimy é gratuito para os terapeutas?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">Sim! O painel web do terapeuta é completamente gratuito para
+                                    sempre. Você pode gerenciar até 10 pacientes sem custo algum. Para equipes maiores,
+                                    oferecemos planos profissionais com recursos extras.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq2">
+                                    Como o paciente se conecta ao terapeuta?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">O terapeuta recebe um código único ao criar a conta. O
+                                    paciente insere esse código no app Zimy durante o cadastro e a conexão é feita
+                                    automaticamente. Simples assim.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq3">
+                                    Os dados dos pacientes são seguros?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">Absolutamente. Todos os dados são protegidos com
+                                    criptografia de ponta a ponta. Somente o paciente e o terapeuta autorizado têm
+                                    acesso às informações. A plataforma está em conformidade com a LGPD.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq4">
+                                    O Zimy substitui a terapia presencial?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">Não e nunca será. O Zimy é uma ferramenta de suporte entre
+                                    sessões. Ele complementa o trabalho terapêutico, dando ao profissional dados mais
+                                    ricos para conduzir o atendimento com mais precisão.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-4 border-top border-secondary">
-        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <p class="mb-0">&copy; 2024 Zimy Ecosystem. Todos os direitos reservados.</p>
-            <div class="d-flex gap-4 mt-3 mt-md-0">
-                <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="text-white"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+    <hr class="divider-glow">
+
+    <!-- ===== FINAL CTA ===== -->
+    <section style="padding:7rem 0;background:#0B0D17;text-align:center;">
+        <div class="container reveal">
+            <div style="max-width:650px;margin:auto;">
+                <div style="font-size:3rem;margin-bottom:1.5rem;">🚀</div>
+                <h2 style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#F9FAFB;margin-bottom:1.2rem;">Pronto
+                    para transformar vidas?</h2>
+                <p class="landing-p mb-5" style="font-size:1.05rem;">
+                    Comece agora mesmo. Configure seu perfil em minutos e convide seus primeiros pacientes ainda hoje.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="signup.html" class="btn btn-zimy-primary btn-lg px-5"
+                        style="padding:14px 48px;font-size:1.05rem;">
+                        Criar conta grátis <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                    <a href="#app" class="btn btn-zimy-outline btn-lg px-5">
+                        Saiba mais
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer style="background:#060811;padding:2rem 0;border-top:1px solid rgba(255,255,255,0.06);">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <div style="font-size:1.2rem;font-weight:800;"><span style="color:#22D3EE;">Zi</span><span
+                    style="color:#9CA3AF;">my</span></div>
+            <p style="font-size:0.8rem;color:#6B7280;margin:0;font-family:'Poppins',sans-serif;">© 2024 Zimy Ecosystem.
+                Todos os direitos reservados. LGPD compliance.</p>
+            <div class="d-flex gap-4">
+                <a href="#" style="color:#6B7280;"><i class="fab fa-instagram"></i></a>
+                <a href="#" style="color:#6B7280;"><i class="fab fa-linkedin"></i></a>
+                <a href="#" style="color:#6B7280;"><i class="fab fa-twitter"></i></a>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
     <script>
-        // Scroll Reveal Animation
-        const observerOptions = {
-            threshold: 0.1
-        };
-
+        // Scroll reveal
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Apply reveal to sections and specific cards
-            const sections = document.querySelectorAll('section, .glass-card');
-            sections.forEach(el => {
-                el.classList.add('reveal');
-                observer.observe(el);
-            });
-        });
+            entries.forEach(el => { if (el.isIntersecting) el.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 </body>
 
