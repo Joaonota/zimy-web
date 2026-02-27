@@ -80,6 +80,17 @@ const authRest = {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error.message);
         return data;
+    },
+
+    sendPasswordReset: async (email) => {
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${firebaseConfig.apiKey}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({ requestType: "PASSWORD_RESET", email })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error.message);
+        return data;
     }
 };
 
