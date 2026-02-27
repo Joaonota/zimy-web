@@ -46,12 +46,9 @@
                         <!-- STEP 1: Personal Info -->
                         <div class="form-step active" id="step1">
                             <div class="profile-upload-container">
-                                <div class="profile-preview" onclick="document.getElementById('photoInput').click()">
-                                    <i class="fas fa-camera" id="cameraIcon"></i>
-                                    <img id="imagePreview" class="d-none">
-                                    <div class="edit-overlay" id="uploadLabel">Upload</div>
+                                <div class="profile-preview initials-only" id="initialsContainer">
+                                    <span id="initialsDisplay">--</span>
                                 </div>
-                                <input type="file" id="photoInput" class="d-none" accept="image/*">
                             </div>
 
                             <div class="mb-3">

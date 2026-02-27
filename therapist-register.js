@@ -1,5 +1,5 @@
 /**
- * Therapist Registration Logic (Email/Password)
+ * Therapist Registration Logic (Email/Password - Initials Only)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,10 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNext = document.getElementById('btnNext');
     const btnBack = document.getElementById('btnBack');
 
-    // photo upload
-    const photoInput = document.getElementById('photoInput');
-    const imagePreview = document.getElementById('imagePreview');
-    const cameraIcon = document.getElementById('cameraIcon');
+    const fullNameInput = document.getElementById('fullName');
+    const initialsDisplay = document.getElementById('initialsDisplay');
 
     // Multi-select logic
     const setupChips = (containerId) => {
@@ -29,26 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
     setupChips('langChips');
     setupChips('specialtyChips');
 
-    // Photo Preview
-    photoInput.addEventListener('change', function () {
-        if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                imagePreview.src = e.target.result;
-                imagePreview.classList.remove('d-none');
-                cameraIcon.classList.add('d-none');
-            }
-            reader.readAsDataURL(this.files[0]);
-        }
-    });
-
     // Helper to get initials
     const getInitials = (name) => {
-        if (!name) return "";
+        if (!name) return "--";
         const parts = name.trim().split(" ");
         if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
         return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     };
+
+    // Real-time initials preview
+    fullNameInput.addEventListener('input', () => {
+        initialsDisplay.innerText = getInitials(fullNameInput.value);
+    });
 
     // Navigation
     btnNext.addEventListener('click', () => {
@@ -111,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             txtHasAccount: 'Já tem conta?',
             linkLogin: 'Entrar aqui',
             optSelectCountry: 'Selecionar país',
-            uploadLabel: 'Upload',
+            uploadLabel: 'Iniciais',
             lblRegNumber: 'Nº de Registro Profissional'
         },
         en: {
@@ -138,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             txtHasAccount: 'Already have an account?',
             linkLogin: 'Login here',
             optSelectCountry: 'Select country',
-            uploadLabel: 'Upload',
+            uploadLabel: 'Initials',
             lblRegNumber: 'Professional Reg. Number'
         }
     };
@@ -175,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Create therapist object
         const userData = {
-            name: document.getElementById('fullName').value,
+            name: fullNameInput.value,
             email: document.getElementById('email').value,
             phone: document.getElementById('phone').value,
             country: document.getElementById('country').value,
@@ -194,8 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             sessionPrice: document.getElementById('sessionPrice').value,
             currency: document.getElementById('currency').value,
-            photoURL: imagePreview.classList.contains('d-none') ? null : imagePreview.src,
-            initials: getInitials(document.getElementById('fullName').value),
+            photoURL: null, // Photos disabled
+            initials: getInitials(fullNameInput.value),
             createdAt: new Date().toISOString()
         };
 
