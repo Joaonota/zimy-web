@@ -102,7 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
             linkLogin: 'Entrar aqui',
             optSelectCountry: 'Selecionar país',
             uploadLabel: 'Iniciais',
-            lblRegNumber: 'Nº de Registro Profissional'
+            lblRegNumber: 'Nº de Registro Profissional',
+            errEmailIsPatient: 'Este email já está cadastrado como paciente.'
         },
         en: {
             titleMain: 'Create your Account',
@@ -129,7 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
             linkLogin: 'Login here',
             optSelectCountry: 'Select country',
             uploadLabel: 'Initials',
-            lblRegNumber: 'Professional Reg. Number'
+            lblRegNumber: 'Professional Reg. Number',
+            errEmailIsPatient: 'This email is already registered as a patient.'
         }
     };
 
@@ -193,19 +195,30 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const { auth, db, doc, setDoc } = window.zimyFirebase || {};
 
-                errorMsg.innerText = currentLang === 'pt' ? "Criando conta..." : "Creating account...";
+                errorMsg.innerText = currentLang === 'pt' ? "Verificando disponibilidade..." : "Checking availability...";
                 errorMsg.classList.remove('d-none', 'text-danger');
                 errorMsg.classList.add('text-info');
 
-                // 1. SIGN UP WITH FIREBASE AUTH
+                // 1. CHECK IF EMAIL EXISTS IN 'users' COLLECTION
+                const existingUsers = await query("users", [
+                    { field: "email", op: "EQUAL", value: userData.email }
+                ]);
+
+                if (existingUsers && existingUsers.length > 0) {
+                    throw new Error("EMAIL_REGISTERED_AS_PATIENT");
+                }
+
+                errorMsg.innerText = currentLang === 'pt' ? "Criando conta..." : "Creating account...";
+
+                // 2. SIGN UP WITH FIREBASE AUTH
                 const authData = await auth.signUp(userData.email, userData.password);
                 const uid = authData.localId;
 
-                // 2. PREPARE PROFILE DATA
+                // 3. PREPARE PROFILE DATA
                 const { password: _, ...profileData } = userData;
                 profileData.uid = uid;
 
-                // 3. SAVE TO FIRESTORE
+                // 4. SAVE TO FIRESTORE
                 const therapistRef = doc(db, "therapists", uid);
                 await setDoc(therapistRef, profileData);
 
@@ -220,6 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 let message = currentLang === 'pt' ? "Erro ao realizar cadastro." : "Error during registration.";
                 if (error.message === "EMAIL_EXISTS") {
                     message = currentLang === 'pt' ? "Este email já está cadastrado." : "Email already in use.";
+                } else if (error.message === "EMAIL_REGISTERED_AS_PATIENT") {
+                    message = translations[currentLang].errEmailIsPatient;
                 } else if (error.message.includes("WEAK_PASSWORD")) {
                     message = currentLang === 'pt' ? "A senha deve ter pelo menos 6 caracteres." : "Password should be at least 6 characters.";
                 }
