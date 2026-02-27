@@ -40,7 +40,7 @@
                             <input type="password" class="form-control" id="password" required>
                         </div>
 
-                        <div id="errorMsg" class="text-danger small mb-3 d-none"></div>
+                        <div id="errorMsg" class="text-danger small mb-3 d-none text-center"></div>
 
                         <button type="submit" class="btn btn-zimy-primary w-100 mb-3">Entrar no Dashboard</button>
                     </form>
@@ -65,7 +65,6 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // ZimyAuth.login is now async due to Firestore REST call
             const result = await window.ZimyAuth.login(email, password);
 
             if (result.success) {

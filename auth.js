@@ -1,20 +1,24 @@
 /**
- * Zimy Authentication System
+ * Zimy Authentication System (Google-only)
  */
 
 const Auth = {
+    // Legacy support (will now fail or can be redirected)
     login: async (email, password) => {
+        return { success: false, message: "Este método de login foi desativado. Use o Google Sign-In." };
+    },
+
+    loginWithGoogle: async (idToken) => {
         const { auth, db, doc, getDoc } = window.zimyFirebase || {};
 
         if (!auth) {
-            // Fallback (e.g. while testing)
-            console.warn("Firebase Auth not initialized");
-            return { success: false, message: "Erro de configuração." };
+            console.error("Firebase Auth not initialized");
+            return { success: false, message: "Erro de configuração do Firebase." };
         }
 
         try {
-            // 1. AUTHENTICATE WITH FIREBASE AUTH
-            const authData = await auth.signIn(email, password);
+            // 1. AUTHENTICATE WITH FIREBASE AUTH VIA GOOGLE TOKEN
+            const authData = await auth.signInWithGoogle(idToken);
             const uid = authData.localId;
 
             // 2. FETCH PROFILE FROM FIRESTORE USING UID
@@ -23,31 +27,30 @@ const Auth = {
 
             if (docSnap && docSnap.exists) {
                 const user = docSnap.data();
-                // Store session without the need for manual password check
+                // Store session
                 window.Zimy.db.setSession(user);
                 return { success: true };
             }
 
-            return { success: false, message: "Perfil não encontrado no banco de dados." };
+            return { success: false, message: "Perfil não encontrado. Por favor, realize o cadastro." };
         } catch (error) {
-            console.error("Error logging in: ", error);
-            let message = "Erro ao entrar.";
-            if (error.message === "INVALID_PASSWORD" || error.message === "EMAIL_NOT_FOUND") {
-                message = "Email ou senha incorretos.";
-            } else if (error.message === "USER_DISABLED") {
-                message = "Esta conta foi desativada.";
-            }
-            return { success: false, message: message };
+            console.error("Error logging in with Google: ", error);
+            return { success: false, message: "Erro ao autenticar com Google." };
         }
     },
 
     logout: () => {
-        window.Zimy.db.clearSession();
+        if (window.Zimy && window.Zimy.db) {
+            window.Zimy.db.clearSession();
+        }
         window.location.href = 'login.html';
     },
 
     isAuthenticated: () => {
-        return !!window.Zimy.db.getSession();
+        if (window.Zimy && window.Zimy.db) {
+            return !!window.Zimy.db.getSession();
+        }
+        return false;
     }
 };
 

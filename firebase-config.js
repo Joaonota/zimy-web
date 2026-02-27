@@ -1,7 +1,8 @@
 // Firebase Configuration (REST API - Pure JS / No SDK / file:// compatible)
 const firebaseConfig = {
     apiKey: "AIzaSyDn77IiC0O0wXuqVSgThRY_uWG3Y1D6Gxc",
-    projectId: "bazataxi-2a9fb"
+    projectId: "bazataxi-2a9fb",
+    googleClientId: "46519926937-avbmuhuavge9bi8euhqnd75sr6m1glom.apps.googleusercontent.com"
 };
 
 // Simple Firestore REST Client
@@ -59,6 +60,25 @@ const firestoreRest = {
 const authRest = {
     baseUrl: "https://identitytoolkit.googleapis.com/v1/accounts",
 
+    // Exchange Google ID Token for Firebase UID
+    signInWithGoogle: async (idToken) => {
+        const url = `${authRest.baseUrl}:signInWithIdp?key=${firebaseConfig.apiKey}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                postBody: `id_token=${idToken}&providerId=google.com`,
+                requestUri: window.location.origin,
+                returnIdpCredential: true,
+                returnSecureToken: true
+            }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error.message);
+        return data; // contains localId (UID), email, displayName, etc.
+    },
+
+    // Legacy email/password (optional, keep for compatibility)
     signUp: async (email, password) => {
         const url = `${authRest.baseUrl}:signUp?key=${firebaseConfig.apiKey}`;
         const response = await fetch(url, {
@@ -85,6 +105,7 @@ const authRest = {
 // Global reference
 window.zimyFirebase = {
     db: true, // flag
+    config: firebaseConfig,
     doc: (db, coll, id) => ({ coll, id }),
     getDoc: (ref) => firestoreRest.getDoc(ref.coll, ref.id),
     setDoc: (ref, data) => firestoreRest.setDoc(ref.coll, ref.id, data),
