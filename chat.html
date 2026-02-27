@@ -413,10 +413,10 @@
                 <!-- Top Bar -->
                 <div class="chat-top-bar">
                     <div class="chat-patient-info">
-                        <div class="pat-avatar" id="topAvatar" style="width:44px;height:44px;font-size:1.2rem;">💬</div>
+                        <div class="pat-avatar" id="topAvatar" style="width:44px;height:44px;font-size:1.2rem;">?</div>
                         <div>
-                            <div class="chat-patient-name" id="topPatientName">Selecione um paciente</div>
-                            <div class="chat-patient-status" id="topPatientStatus">---</div>
+                            <div class="chat-patient-name" id="topPatientName">Paciente</div>
+                            <div class="chat-patient-status" id="topPatientStatus">Online</div>
                         </div>
                     </div>
                     <div class="d-flex gap-2">
@@ -469,11 +469,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
+    <script src="firebase-config.js"></script>
     <script>
-        let currentPatientId = null;
+        let currentChatId = null;
+        let selectedPatientName = "";
+        let pollingInterval = null;
+        let lastMessageTimestamp = null;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderPatientList();
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = window.Zimy.db.getSession();
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            await renderPatientList();
+
+            // Check for deep-link chatId
+            const urlParams = new URLSearchParams(window.location.search);
+            const linkChatId = urlParams.get('chatId');
+            if (linkChatId) {
+                selectChat(linkChatId);
+            }
 
             document.getElementById('chatForm').addEventListener('submit', e => {
                 e.preventDefault();
@@ -487,132 +504,232 @@
                 setTimeout(() => { document.getElementById('copySummary').innerHTML = '<i class="fas fa-copy me-1"></i> Copiar'; }, 2000);
             });
 
-            // Search
+            // Search filtering
             document.querySelector('.search-input').addEventListener('input', function () {
                 const q = this.value.toLowerCase();
                 document.querySelectorAll('.patient-item').forEach(el => {
                     el.style.display = el.dataset.name.includes(q) ? '' : 'none';
                 });
             });
+
+            // Poll for new chats every 10 seconds
+            setInterval(renderPatientList, 10000);
         });
 
-        function renderPatientList() {
-            const patients = window.Zimy.db.load('patients');
-            const container = document.getElementById('patientListContainer');
+        async function renderPatientList() {
+            const user = window.Zimy.db.getSession();
+            if (!user) return;
 
-            if (patients.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-5 opacity-50">
-                        <i class="fas fa-user-slash d-block mb-2"></i>
-                        <small>Sem pacientes</small>
-                    </div>
-                `;
-                return;
+            try {
+                const { query, getDocs, setDoc } = window.zimyFirebase;
+                // 1. Fetch chats where therapist is a participant
+                let chats = await query("chats", [
+                    { field: "participantIds", op: "ARRAY_CONTAINS", value: user.uid }
+                ]);
+
+                // --- AUTO REPAIR ---
+                if (chats.length === 0) {
+                    const allResources = await getDocs("chats");
+                    const { getDoc } = window.zimyFirebase;
+
+                    for (const ch of allResources) {
+                        const data = ch.data() || {};
+                        if (ch.id.includes(user.uid) && (!data.patientName || data.patientName === 'Paciente' || !data.participantIds)) {
+                            const ids = ch.id.split('_');
+                            const patientId = ids.find(id => id !== user.uid);
+                            let recoveredName = "Paciente";
+
+                            try {
+                                // Try session_requests first
+                                const reqId = ids.join('_'); // assuming same sort as chat id
+                                const reqDoc = await getDoc("session_requests", reqId);
+                                if (reqDoc.exists) {
+                                    recoveredName = reqDoc.data().userName || "Paciente";
+                                } else {
+                                    // Try users collection
+                                    const userDoc = await getDoc("users", patientId);
+                                    if (userDoc.exists) recoveredName = userDoc.data().name || "Paciente";
+                                }
+                            } catch (e) { console.error("Recovery failed for:", ch.id, e); }
+
+                            await setDoc("chats", ch.id, {
+                                participantIds: ids,
+                                therapistName: user.name || "Terapeuta",
+                                patientName: recoveredName
+                            }, true);
+
+                            return renderPatientList();
+                        }
+                    }
+                }
+
+                const container = document.getElementById('patientListContainer');
+
+                if (chats.length === 0) {
+                    container.innerHTML = `<div class="text-center py-5 opacity-50"><i class="fas fa-user-slash d-block mb-2"></i><small>Sem conversas ativas</small></div>`;
+                    return;
+                }
+
+                container.innerHTML = chats.map(chat => {
+                    const data = chat.data();
+                    const patName = data.patientName || 'Paciente';
+                    const lastMsg = data.lastMessage || 'Nenhuma mensagem';
+                    const lastTime = data.lastMessageAt ? new Date(data.lastMessageAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+                    return `
+                        <div class="patient-item ${currentChatId === chat.id ? 'active' : ''}" 
+                             onclick="selectChat('${chat.id}', '${patName}')"
+                             id="pat-${chat.id}"
+                             data-name="${patName.toLowerCase()}">
+                            <div class="pat-avatar">
+                                ${patName.charAt(0)}
+                            </div>
+                            <div class="pat-info">
+                                <div class="pat-name">${patName}</div>
+                                <div class="pat-last-msg">${lastMsg}</div>
+                            </div>
+                            <div class="pat-meta">
+                                <div>${lastTime}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error("Error loading chat list:", error);
             }
-
-            container.innerHTML = patients.map(p => `
-                <div class="patient-item ${currentPatientId === p.id ? 'active' : ''}" 
-                     onclick="selectPatient(${p.id})"
-                     id="pat-${p.id}"
-                     data-name="${p.name.toLowerCase()}">
-                    <div class="pat-avatar">
-                        ${p.emoji || '👤'}
-                        <span class="status-dot ${p.status}"></span>
-                    </div>
-                    <div class="pat-info">
-                        <div class="pat-name">${p.name}</div>
-                        <div class="pat-last-msg">${p.lastMsg || ''}</div>
-                    </div>
-                    <div class="pat-meta">
-                        <div>Hoje</div>
-                        ${p.status === 'online' ? '<div class="unread-badge">1</div>' : ''}
-                    </div>
-                </div>
-            `).join('');
         }
 
-        function selectPatient(id) {
-            currentPatientId = id;
-            const patients = window.Zimy.db.load('patients');
-            const patient = patients.find(p => p.id === id);
+        async function selectChat(chatId, patName) {
+            currentChatId = chatId;
 
-            // Update top bar
-            document.getElementById('topAvatar').innerText = patient.emoji;
-            document.getElementById('topPatientName').innerText = patient.name;
-            document.getElementById('topPatientStatus').innerHTML = patient.status === 'online'
-                ? `<span style="color:#34D399;">● online</span> · ${patient.specialty}`
-                : `<span style="color:#6B7280;">● offline</span> · ${patient.specialty}`;
+            // Fetch name if missing (deep link)
+            if (!patName) {
+                const { getDoc } = window.zimyFirebase;
+                try {
+                    const chatRes = await getDoc("chats", chatId);
+                    if (chatRes.exists) {
+                        patName = chatRes.data().patientName || "Paciente";
+                    } else {
+                        patName = "Paciente";
+                    }
+                } catch (e) {
+                    patName = "Paciente";
+                }
+            }
 
-            // Mark active
+            selectedPatientName = patName;
+
+            // UI Updates
+            document.getElementById('topAvatar').innerText = patName.charAt(0);
+            document.getElementById('topPatientName').innerText = patName;
+            document.getElementById('topPatientStatus').innerHTML = `<span style="color:#34D399;">●</span> Chat Ativo`;
+
+            // Active state
             document.querySelectorAll('.patient-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(`pat-${id}`).classList.add('active');
+            const activeItem = document.getElementById(`pat-${chatId}`);
+            if (activeItem) activeItem.classList.add('active');
 
-            renderMessages();
-        }
-
-        function renderMessages() {
-            const chats = window.Zimy.db.load('chats');
-            const messages = chats[currentPatientId] || [];
+            // Reset messages & start polling
             const area = document.getElementById('messagesArea');
+            area.innerHTML = '';
+            lastMessageTimestamp = null;
 
-            if (messages.length === 0) {
-                area.innerHTML = `<div class="empty-chat text-center">
-                    <i class="fas fa-comment-dots fa-3x mb-3" style="color:var(--neon-blue); opacity:0.3;"></i>
-                    <p>Nenhuma mensagem ainda. Diga olá!</p>
-                </div>`;
-                return;
-            }
-
-            area.innerHTML = messages.map(m => `
-                <div class="msg-bubble ${m.sender === 'therapist' ? 'sent' : 'received'}">
-                    ${m.text}
-                    <div class="msg-time">${m.time || ''}<i class="fas fa-check${m.sender === 'therapist' ? '-double' : ''} ms-1" style="font-size:0.6rem;opacity:0.6;"></i></div>
-                </div>
-            `).join('');
-            area.scrollTop = area.scrollHeight;
+            if (pollingInterval) clearInterval(pollingInterval);
+            fetchMessages();
+            pollingInterval = setInterval(fetchMessages, 3000);
         }
 
-        function sendMessage() {
-            if (!currentPatientId) return;
+        async function fetchMessages() {
+            if (!currentChatId) return;
+
+            try {
+                const { getDocs } = window.zimyFirebase;
+                const docs = await getDocs(`chats/${currentChatId}/messages`);
+                const area = document.getElementById('messagesArea');
+
+                // Deduplicate and Sort
+                const messagesMap = new Map();
+                docs.forEach(d => {
+                    const data = d.data();
+                    if (data) messagesMap.set(d.id, { id: d.id, ...data });
+                });
+                const messages = Array.from(messagesMap.values())
+                    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+                if (messages.length === 0) {
+                    area.innerHTML = `<div class="empty-chat text-center"><i class="fas fa-comment-dots fa-3x mb-3" style="color:var(--neon-blue); opacity:0.3;"></i><p>Nenhuma mensagem ainda.</p></div>`;
+                    return;
+                }
+
+                const lastMsgId = messages.length > 0 ? messages[messages.length - 1].id : null;
+                const stateKey = `${currentChatId}_${lastMsgId}_${messages.length}`;
+                if (area.dataset.stateKey === stateKey) return;
+                area.dataset.stateKey = stateKey;
+
+                const therapist = window.Zimy.db.getSession();
+                area.innerHTML = messages.map(m => {
+                    const isSent = m.senderId === therapist.uid;
+                    const time = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    return `
+                        <div class="msg-bubble ${isSent ? 'sent' : 'received'}">
+                            ${m.text}
+                            <div class="msg-time">${time}</div>
+                        </div>
+                    `;
+                }).join('');
+                area.scrollTop = area.scrollHeight;
+            } catch (error) {
+                console.error("Error fetching messages:", error);
+            }
+        }
+
+        let isSending = false;
+        async function sendMessage() {
+            if (!currentChatId || isSending) return;
             const input = document.getElementById('msgInput');
+            const btn = document.querySelector('.send-btn');
             const text = input.value.trim();
             if (!text) return;
 
-            const chats = window.Zimy.db.load('chats');
-            if (!chats[currentPatientId]) chats[currentPatientId] = [];
+            isSending = true;
+            input.disabled = true;
+            if (btn) btn.disabled = true;
 
-            const now = new Date();
-            const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-            chats[currentPatientId].push({ sender: 'therapist', text, time });
-            window.Zimy.db.save('chats', chats);
+            const user = window.Zimy.db.getSession();
+            const { doc, setDoc } = window.zimyFirebase;
 
-            // Update last message
-            const patients = window.Zimy.db.load('patients');
-            const idx = patients.findIndex(p => p.id === currentPatientId);
-            patients[idx].lastMsg = 'Você: ' + text;
-            window.Zimy.db.save('patients', patients);
+            try {
+                const timestamp = new Date().toISOString();
+                const msgId = Date.now().toString();
 
-            input.value = '';
-            renderMessages();
-            renderPatientList();
-            document.querySelectorAll('.patient-item').forEach(el => el.classList.remove('active'));
-            if (document.getElementById(`pat-${currentPatientId}`))
-                document.getElementById(`pat-${currentPatientId}`).classList.add('active');
+                await setDoc(doc(null, `chats/${currentChatId}/messages`, msgId), {
+                    text,
+                    senderId: user.uid,
+                    timestamp: timestamp
+                });
+
+                await setDoc(doc(null, "chats", currentChatId), {
+                    lastMessage: text,
+                    lastMessageAt: timestamp,
+                    lastSenderId: user.uid
+                }, true);
+
+                input.value = '';
+                await fetchMessages();
+                await renderPatientList();
+            } catch (error) {
+                console.error("Error sending message:", error);
+            } finally {
+                isSending = false;
+                input.disabled = false;
+                if (btn) btn.disabled = false;
+                input.focus();
+            }
         }
 
         function generateSummary() {
-            if (!currentPatientId) { alert('Selecione um paciente primeiro.'); return; }
-            const chats = window.Zimy.db.load('chats');
-            const patients = window.Zimy.db.load('patients');
-            const messages = chats[currentPatientId] || [];
-            const patient = patients.find(p => p.id === currentPatientId);
-
-            if (!messages.length) { alert('Sem mensagens para resumir.'); return; }
-
-            const lastPat = messages.filter(m => m.sender === 'patient').pop()?.text || 'N/A';
-            const totalMsgs = messages.length;
-            const summary = `📋 Resumo Clínico — ${patient.name}\n\nEspecialidade: ${patient.specialty}\n\nA conversa contém ${totalMsgs} mensagens trocadas. No último contato, o paciente relatou: "${lastPat}"\n\nO paciente demonstra engajamento ativo com as missões terapêuticas do app Zimy e apresenta evolução positiva no autoconhecimento emocional. Recomenda-se acompanhamento próximo.`;
-
+            if (!currentChatId) return;
+            const summary = `📋 Resumo Clínico — ${selectedPatientName}\n\nEsta conversa está sendo gerenciada via sistema Zimy. Recomenda-se revisão das últimas falas do paciente para preparação da próxima sessão.`;
             document.getElementById('summaryText').innerText = summary;
             new bootstrap.Modal(document.getElementById('summaryModal')).show();
         }

@@ -63,7 +63,7 @@
             const errorMsg = document.getElementById('errorMsg');
             errorMsg.classList.add('d-none');
 
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim().toLowerCase();
             const password = document.getElementById('password').value;
 
             const result = await window.ZimyAuth.login(email, password);

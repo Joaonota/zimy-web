@@ -225,6 +225,19 @@
             </div>
         </div>
 
+        <!-- Session Requests -->
+        <div id="requestsSection" class="glass-card mb-5 d-none"
+            style="padding: 2rem; border: 1px solid var(--neon-blue);">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0 fw-bold"><i class="fas fa-user-plus me-2 text-info"></i> <span
+                        id="lblSessionRequests">Novos Pedidos de Sessão</span></h5>
+                <span class="badge bg-info" id="requestCount">0</span>
+            </div>
+            <div id="requestsContainer" class="row g-3">
+                <!-- Requests will be injected here -->
+            </div>
+        </div>
+
         <!-- Patients Table -->
         <div class="glass-card" style="padding: 2rem;">
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -258,6 +271,7 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="firebase-config.js"></script>
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -277,7 +291,7 @@
                     document.getElementById('userPhoto').style.color = '#fff';
                 }
             }
-            renderPatientsTable();
+            fetchRecentPatients();
 
             // Language management
             let currentLang = localStorage.getItem('zimy_lang') || 'pt';
@@ -313,7 +327,12 @@
                     thStatus: 'Status',
                     thSpecialty: 'Especialidade',
                     thLastSession: 'Última Sessão',
-                    txtNoPatients: 'Nenhum paciente cadastrado ainda.'
+                    txtNoPatients: 'Nenhum paciente cadastrado ainda.',
+                    // Requests
+                    lblSessionRequests: 'Novos Pedidos de Sessão',
+                    btnAccept: 'Aceitar',
+                    btnReject: 'Recusar',
+                    msgCreatingChat: 'Iniciando chat...',
                 },
                 en: {
                     // Header
@@ -346,7 +365,12 @@
                     thStatus: 'Status',
                     thSpecialty: 'Specialty',
                     thLastSession: 'Last Session',
-                    txtNoPatients: 'No patients registered yet.'
+                    txtNoPatients: 'No patients registered yet.',
+                    // Requests
+                    lblSessionRequests: 'New Session Requests',
+                    btnAccept: 'Accept',
+                    btnReject: 'Reject',
+                    msgCreatingChat: 'Starting chat...',
                 }
             };
 
@@ -376,38 +400,192 @@
                     card.style.transform = 'translateY(0)';
                 }, i * 80);
             });
+
+            // Initial fetch
+            fetchSessionRequests();
+            fetchRecentPatients();
         });
 
-        function renderPatientsTable() {
-            const patients = window.Zimy.db.load('patients');
-            const container = document.getElementById('patientsTableBody');
+        async function fetchSessionRequests() {
+            const user = window.Zimy.db.getSession();
+            console.log("Checking session requests for UID:", user ? user.uid : "NO USER");
+            if (!user || !user.uid) return;
 
-            if (patients.length === 0) {
-                container.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="text-center py-5 opacity-50">
-                            <i class="fas fa-user-slash fs-2 mb-3 d-block"></i>
-                            <span id="txtNoPatients">Nenhum paciente cadastrado ainda.</span>
-                        </td>
-                    </tr>
-                `;
-                return;
+            try {
+                const { query } = window.zimyFirebase;
+                console.log("Running query on session_requests...");
+                // Query pending requests for this therapist
+                const requests = await query("session_requests", [
+                    { field: "therapistId", op: "EQUAL", value: user.uid },
+                    { field: "status", op: "EQUAL", value: "pending" }
+                ]);
+                console.log("Requests found:", requests.length, requests);
+
+                const section = document.getElementById('requestsSection');
+                const container = document.getElementById('requestsContainer');
+                const countBadge = document.getElementById('requestCount');
+
+                if (requests.length > 0) {
+                    section.classList.remove('d-none');
+                    countBadge.innerText = requests.length;
+
+                    container.innerHTML = requests.map(req => {
+                        const data = req.data();
+                        return `
+                            <div class="col-md-6 col-lg-4">
+                                <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <div style="width:40px;height:40px;border-radius:50%;background:rgba(34,211,238,0.2);display:flex;align-items:center;justify-content:center;font-weight:bold;">
+                                            ${data.userInitials || 'P'}
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold" style="font-size:0.9rem;">${data.userName || 'Paciente'}</div>
+                                            <div class="small opacity-50">Solicitou hoje</div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-zimy-primary btn-sm flex-grow-1" onclick="handleRequest('${req.id}', 'accepted', '${data.userId}', '${data.userName}')">
+                                            <span id="btnAccept">Aceitar</span>
+                                        </button>
+                                        <button class="btn btn-zimy-outline btn-sm flex-grow-1" onclick="handleRequest('${req.id}', 'rejected')">
+                                            <span id="btnReject">Recusar</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    section.classList.add('d-none');
+                }
+            } catch (error) {
+                console.error("Error fetching requests:", error);
             }
+        }
 
-            container.innerHTML = patients.map(p => `
-                <tr>
-                    <td style="padding:1rem 0;">
-                        <div class="d-flex align-items-center gap-3">
-                            <span style="font-size:1.6rem;">${p.emoji || '👤'}</span>
-                            <span class="fw-semibold">${p.name}</span>
-                        </div>
-                    </td>
-                    <td><span class="badge-status ${p.status === 'online' ? 'badge-online' : 'badge-offline'}">${p.status}</span></td>
-                    <td style="color:var(--text-dim);font-size:0.88rem;">${p.specialty}</td>
-                    <td style="color:var(--text-dim);font-size:0.88rem;">Ontem, 14:00</td>
-                    <td><a href="chat.html" class="btn btn-zimy-outline btn-sm px-3 py-1">Abrir Chat</a></td>
-                </tr>
-            `).join('');
+        async function handleRequest(requestId, status, userId, userName) {
+            const { doc, setDoc, auth } = window.zimyFirebase;
+            const therapist = window.Zimy.db.getSession();
+
+            try {
+                // 1. Update request status
+                await setDoc(doc(null, "session_requests", requestId), { status }, true);
+
+                if (status === 'accepted') {
+                    // 2. Create chat document
+                    const participantIds = [therapist.uid, userId].sort();
+                    const chatId = participantIds.join('_');
+
+                    await setDoc(doc(null, "chats", chatId), {
+                        participantIds: participantIds,
+                        lastMessage: "Sessão aprovada. Olá!",
+                        lastMessageAt: new Date().toISOString(),
+                        lastSenderId: therapist.uid,
+                        therapistName: therapist.name,
+                        patientName: userName
+                    });
+
+                    // Add to local storage for quick list (optional, but helps sync)
+                    const patients = window.Zimy.db.load('patients');
+                    if (!patients.find(p => p.id === userId)) {
+                        patients.push({
+                            id: userId,
+                            name: userName,
+                            status: 'online',
+                            specialty: 'Novo Paciente',
+                            emoji: '👤'
+                        });
+                        window.Zimy.db.save('patients', patients);
+                    }
+                }
+
+                // Refresh UI
+                fetchSessionRequests();
+                fetchRecentPatients();
+            } catch (error) {
+                console.error("Error handling request:", error);
+                alert("Erro ao processar pedido.");
+            }
+        }
+
+        async function fetchRecentPatients() {
+            const user = window.Zimy.db.getSession();
+            if (!user || !user.uid) return;
+
+            try {
+                const { query, getDocs, getDoc, setDoc } = window.zimyFirebase;
+                // Fetch chats where therapy is active
+                let chats = await query("chats", [
+                    { field: "participantIds", op: "ARRAY_CONTAINS", value: user.uid }
+                ]);
+
+                // --- AUTO REPAIR ---
+                if (chats.length === 0) {
+                    const allResources = await getDocs("chats");
+                    for (const ch of allResources) {
+                        const data = ch.data() || {};
+                        if (ch.id.includes(user.uid) && (!data.patientName || data.patientName === 'Paciente' || !data.participantIds)) {
+                            const ids = ch.id.split('_');
+                            const patientId = ids.find(id => id !== user.uid);
+                            let recoveredName = "Paciente";
+
+                            try {
+                                const reqId = ids.join('_');
+                                const reqDoc = await getDoc("session_requests", reqId);
+                                if (reqDoc.exists) {
+                                    recoveredName = reqDoc.data().userName || "Paciente";
+                                } else {
+                                    const userDoc = await getDoc("users", patientId);
+                                    if (userDoc.exists) recoveredName = userDoc.data().name || "Paciente";
+                                }
+                            } catch (e) { console.error("Recovery failed:", e); }
+
+                            await setDoc("chats", ch.id, {
+                                participantIds: ids,
+                                therapistName: user.name || "Terapeuta",
+                                patientName: recoveredName
+                            }, true);
+                            return fetchRecentPatients();
+                        }
+                    }
+                }
+                const container = document.getElementById('patientsTableBody');
+
+                if (chats.length === 0) {
+                    container.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center py-5 opacity-50">
+                                <i class="fas fa-user-slash fs-2 mb-3 d-block"></i>
+                                <span id="txtNoPatients">Nenhum paciente cadastrado ainda.</span>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = chats.map(chat => {
+                    const data = chat.data();
+                    const patName = data.patientName || 'Paciente';
+                    return `
+                        <tr>
+                            <td style="padding:1rem 0;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--neon-blue);">
+                                        ${patName.charAt(0)}
+                                    </div>
+                                    <span class="fw-semibold">${patName}</span>
+                                </div>
+                            </td>
+                            <td><span class="badge-status badge-online">online</span></td>
+                            <td style="color:var(--text-dim);font-size:0.88rem;">Terapia Ativa</td>
+                            <td style="color:var(--text-dim);font-size:0.88rem;">${data.lastMessageAt ? new Date(data.lastMessageAt).toLocaleDateString() : '---'}</td>
+                            <td><a href="chat.html?chatId=${chat.id}" class="btn btn-zimy-outline btn-sm px-3 py-1">Abrir Chat</a></td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error("Error fetching patients:", error);
+            }
         }
     </script>
 </body>
