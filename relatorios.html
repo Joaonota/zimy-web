@@ -170,6 +170,9 @@
             <a href="relatorios.html" class="sidebar-link active">
                 <i class="fas fa-chart-pie"></i><span>Relatórios</span>
             </a>
+            <a href="profile.html" class="sidebar-link">
+                <i class="fas fa-user-circle"></i><span>Meu Perfil</span>
+            </a>
         </nav>
         <div style="margin-top: auto; padding-top: 2rem;">
             <a href="#" id="logoutBtn" class="sidebar-link" style="color: var(--soft-red);">
@@ -208,31 +211,31 @@
         <div id="reportContent">
 
             <!-- Summary Stats -->
-            <div class="row g-4 mb-4">
+            <div class="row g-4 mb-4" id="summaryStats">
                 <div class="col-6 col-xl-3">
                     <div class="report-card text-center" style="padding:1.5rem 1rem;">
-                        <div style="font-size:2rem;font-weight:700;color:#A78BFA;">24</div>
+                        <div style="font-size:2rem;font-weight:700;color:#A78BFA;" id="statPatients">0</div>
                         <div style="font-size:0.8rem;color:var(--text-dim);font-family:'Poppins',sans-serif;">Pacientes
                         </div>
                     </div>
                 </div>
                 <div class="col-6 col-xl-3">
                     <div class="report-card text-center" style="padding:1.5rem 1rem;">
-                        <div style="font-size:2rem;font-weight:700;color:#60A5FA;">87%</div>
+                        <div style="font-size:2rem;font-weight:700;color:#60A5FA;" id="statAdhesion">0%</div>
                         <div style="font-size:0.8rem;color:var(--text-dim);font-family:'Poppins',sans-serif;">Adesão
                             média</div>
                     </div>
                 </div>
                 <div class="col-6 col-xl-3">
                     <div class="report-card text-center" style="padding:1.5rem 1rem;">
-                        <div style="font-size:2rem;font-weight:700;color:#34D399;">+18%</div>
+                        <div style="font-size:2rem;font-weight:700;color:#34D399;" id="statMood">0%</div>
                         <div style="font-size:0.8rem;color:var(--text-dim);font-family:'Poppins',sans-serif;">Humor
                             médio</div>
                     </div>
                 </div>
                 <div class="col-6 col-xl-3">
                     <div class="report-card text-center" style="padding:1.5rem 1rem;">
-                        <div style="font-size:2rem;font-weight:700;color:#FBBF24;">142</div>
+                        <div style="font-size:2rem;font-weight:700;color:#FBBF24;" id="statMissions">0</div>
                         <div style="font-size:0.8rem;color:var(--text-dim);font-family:'Poppins',sans-serif;">Missões
                             concluídas</div>
                     </div>
@@ -294,6 +297,7 @@
             });
 
             renderReports(patients);
+            updateSummaryStats(patients);
 
             document.getElementById('patientFilter').addEventListener('change', () => {
                 const val = document.getElementById('patientFilter').value;
@@ -304,8 +308,32 @@
             document.getElementById('downloadPdfBtn').addEventListener('click', downloadPDF);
         });
 
+        function updateSummaryStats(patients) {
+            document.getElementById('statPatients').innerText = patients.length;
+            if (patients.length > 0) {
+                document.getElementById('statAdhesion').innerText = '87%';
+                document.getElementById('statMood').innerText = '+18%';
+                document.getElementById('statMissions').innerText = '142';
+            } else {
+                document.getElementById('statAdhesion').innerText = '0%';
+                document.getElementById('statMood').innerText = '0%';
+                document.getElementById('statMissions').innerText = '0';
+            }
+        }
+
         function renderReports(patients) {
             const container = document.getElementById('patientReports');
+
+            if (patients.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-card text-center py-5 opacity-50">
+                        <i class="fas fa-chart-line fs-1 mb-3 d-block"></i>
+                        <p>Nenhum dado de pacientes para exibir.</p>
+                    </div>
+                `;
+                return;
+            }
+
             container.innerHTML = patients.map(p => {
                 const data = REPORT_DATA[p.id] || { trend: [], moods: {}, insights: [], summary: 'Sem dados suficientes.' };
                 const moodBars = Object.entries(data.moods).map(([label, val]) => `

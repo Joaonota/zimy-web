@@ -4,13 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro — Zimy para Terapeutas</title>
+    <title id="pageTitle">Cadastro — Zimy para Terapeutas</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+<body class="d-flex align-items-center justify-content-center" style="min-height: 100vh; padding: 2rem 0;">
+
+    <!-- Language Switcher -->
+    <div class="lang-switcher-fixed">
+        <button class="btn btn-zimy-outline btn-sm px-3" id="langToggle">EN / PT</button>
+    </div>
 
     <!-- Background Decoration -->
     <div class="bg-blobs">
@@ -20,53 +26,169 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
+            <div class="col-md-8 col-lg-6">
                 <div class="glass-card">
                     <div class="text-center mb-4">
                         <a href="index.html" class="navbar-brand fs-2">
                             <span style="color: var(--neon-blue);">Zi</span>my
                         </a>
-                        <h2 class="mt-3">Criar sua Conta</h2>
-                        <p>Comece a acompanhar seus pacientes hoje.</p>
+                        <h2 class="mt-3" id="titleMain">Criar sua Conta</h2>
+                        <p id="subtitleMain">Comece a acompanhar seus pacientes globalmente.</p>
+                    </div>
+
+                    <!-- Step Indicator -->
+                    <div class="step-indicator">
+                        <div class="step-dot active" id="dot1"></div>
+                        <div class="step-dot" id="dot2"></div>
                     </div>
 
                     <form id="signupForm">
-                        <div class="mb-3">
-                            <label class="form-label text-white">Nome Completo</label>
-                            <input type="text" class="form-control" id="name" placeholder="Ex: Dr. Roberto Silva"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-white">Email Profissional</label>
-                            <input type="email" class="form-control" id="email" placeholder="nome@exemplo.com" required>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white">Especialidade</label>
-                                <input type="text" class="form-control" id="specialty" placeholder="Ex: TCC" required>
+                        <!-- STEP 1: Personal Info -->
+                        <div class="form-step active" id="step1">
+                            <div class="profile-upload-container">
+                                <div class="profile-preview" onclick="document.getElementById('photoInput').click()">
+                                    <i class="fas fa-camera" id="cameraIcon"></i>
+                                    <img id="imagePreview" class="d-none">
+                                    <div class="edit-overlay" id="uploadLabel">Upload</div>
+                                </div>
+                                <input type="file" id="photoInput" class="d-none" accept="image/*">
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white">Nº Profissional</label>
-                                <input type="text" class="form-control" id="regNumber" placeholder="Ex: CRP 12345"
+
+                            <div class="mb-3">
+                                <label class="form-label text-white" id="lblFullName">Nome Completo</label>
+                                <input type="text" class="form-control" id="fullName"
+                                    placeholder="Ex: Dr. Roberto Silva" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-white" id="lblEmail">Email Profissional</label>
+                                <input type="email" class="form-control" id="email" placeholder="nome@exemplo.com"
                                     required>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-white">Senha</label>
-                            <input type="password" class="form-control" id="password" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label text-white">Confirmar Senha</label>
-                            <input type="password" class="form-control" id="confirmPassword" required>
+
+                            <div class="mb-3">
+                                <label class="form-label text-white" id="lblPhone">Telefone</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="+55 11 99999-9999"
+                                    required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white" id="lblCountry">País</label>
+                                    <select class="form-control" id="country" required>
+                                        <option value="" id="optSelectCountry">Selecionar país</option>
+                                        <option value="PT">Portugal</option>
+                                        <option value="BR">Brasil</option>
+                                        <option value="US">Estados Unidos</option>
+                                        <option value="AO">Angola</option>
+                                        <option value="MZ">Moçambique</option>
+                                        <option value="GB">Reino Unido</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white" id="lblCity">Cidade</label>
+                                    <input type="text" class="form-control" id="city" placeholder="Ex: Lisboa" required>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label text-white" id="lblRegNumber">Nº de Registro
+                                        Profissional</label>
+                                    <input type="text" class="form-control" id="regNumber"
+                                        placeholder="Ex: CRP 06/123456" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white" id="lblPassword">Senha</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white" id="lblConfirmPassword">Confirmar Senha</label>
+                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                </div>
+                            </div>
+
+                            <div class="text-end mt-4">
+                                <button type="button" class="btn btn-zimy-primary px-5" id="btnNext">Próximo</button>
+                            </div>
                         </div>
 
-                        <div id="errorMsg" class="text-danger small mb-3 d-none"></div>
+                        <!-- STEP 2: Professional Profile -->
+                        <div class="form-step" id="step2">
+                            <div class="mb-4">
+                                <label class="form-label text-white" id="lblLanguages">Idiomas que fala</label>
+                                <div class="chips-container" id="langChips">
+                                    <div class="chip" data-value="pt">Português</div>
+                                    <div class="chip" data-value="en">English</div>
+                                </div>
+                            </div>
 
-                        <button type="submit" class="btn btn-zimy-primary w-100 mb-3">Cadastrar</button>
+                            <div class="mb-4">
+                                <label class="form-label text-white" id="lblSpecialties">Especialidades</label>
+                                <div class="chips-container" id="specialtyChips">
+                                    <div class="chip" data-value="TCC">TCC</div>
+                                    <div class="chip" data-value="Psicanálise">Psicanálise</div>
+                                    <div class="chip" data-value="Mindfulness">Mindfulness</div>
+                                    <div class="chip" data-value="Terapia de Casal">Terapia de Casal</div>
+                                    <div class="chip" data-value="Depressão">Depressão</div>
+                                    <div class="chip" data-value="Ansiedade">Ansiedade</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-white" id="lblBioPt">Biografia (Português)</label>
+                                <textarea class="form-control" id="bioPt" rows="3"
+                                    placeholder="Sua história e abordagem..."></textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label text-white" id="lblBioEn">Biography (English)</label>
+                                <textarea class="form-control" id="bioEn" rows="3"
+                                    placeholder="Your story and approach..."></textarea>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label text-white mb-2"
+                                        id="lblAvailability">Disponibilidade</label>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="onlineAvailable" checked>
+                                        <label class="form-check-label text-white-50 ms-2" for="onlineAvailable"
+                                            id="lblOnline">Online</label>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="presentialAvailable">
+                                        <label class="form-check-label text-white-50 ms-2" for="presentialAvailable"
+                                            id="lblPresential">Presencial</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-white" id="lblPrice">Preço da Sessão</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="sessionPrice" placeholder="0.00">
+                                        <select class="form-control" id="currency"
+                                            style="max-width: 100px; border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                                            <option value="EUR">EUR</option>
+                                            <option value="USD">USD</option>
+                                            <option value="BRL">BRL</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="errorMsg" class="text-danger small mb-3 d-none"></div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-zimy-outline px-4" id="btnBack">Voltar</button>
+                                <button type="submit" class="btn btn-zimy-primary px-4" id="btnSubmit">Finalizar
+                                    Cadastro</button>
+                            </div>
+                        </div>
                     </form>
 
-                    <p class="text-center small mb-0">
-                        Já tem conta? <a href="login.html" class="text-white fw-bold">Entrar aqui</a>
+                    <p class="text-center small mb-0 mt-4">
+                        <span id="txtHasAccount">Já tem conta?</span> <a href="login.html" class="text-white fw-bold"
+                            id="linkLogin">Entrar aqui</a>
                     </p>
                 </div>
             </div>
@@ -74,42 +196,9 @@
     </div>
 
     <script src="script.js"></script>
-    <script>
-        document.getElementById('signupForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const errorMsg = document.getElementById('errorMsg');
-            errorMsg.classList.add('d-none');
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const specialty = document.getElementById('specialty').value;
-            const regNumber = document.getElementById('regNumber').value;
-
-            // Validações
-            if (password !== confirmPassword) {
-                errorMsg.innerText = "As senhas não coincidem.";
-                errorMsg.classList.remove('d-none');
-                return;
-            }
-
-            const therapists = window.Zimy.db.load('therapists');
-            if (therapists.find(t => t.email === email)) {
-                errorMsg.innerText = "Este email já está cadastrado.";
-                errorMsg.classList.remove('d-none');
-                return;
-            }
-
-            // Salvar no localstorage
-            const newUser = { name, email, password, specialty, regNumber };
-            therapists.push(newUser);
-            window.Zimy.db.save('therapists', therapists);
-
-            alert('Cadastro realizado com sucesso! Redirecionando para o login...');
-            window.location.href = 'login.html';
-        });
-    </script>
+    <script src="auth.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="therapist-register.js"></script>
 </body>
 
 </html>

@@ -106,21 +106,24 @@
         </div>
         <nav class="d-flex flex-column gap-1">
             <a href="dashboard.html" class="sidebar-link active">
-                <i class="fas fa-home"></i><span>Dashboard</span>
+                <i class="fas fa-home"></i><span id="navDashboard">Dashboard</span>
             </a>
             <a href="chat.html" class="sidebar-link">
-                <i class="fas fa-comment-medical"></i><span>Chat</span>
+                <i class="fas fa-comment-medical"></i><span id="navChat">Chat</span>
             </a>
             <a href="#" class="sidebar-link">
-                <i class="fas fa-users"></i><span>Pacientes</span>
+                <i class="fas fa-users"></i><span id="navPatients">Pacientes</span>
             </a>
             <a href="relatorios.html" class="sidebar-link">
-                <i class="fas fa-chart-pie"></i><span>Relatórios</span>
+                <i class="fas fa-chart-pie"></i><span id="navReports">Relatórios</span>
+            </a>
+            <a href="profile.html" class="sidebar-link">
+                <i class="fas fa-user-circle"></i><span id="navProfile">Meu Perfil</span>
             </a>
         </nav>
         <div style="margin-top: auto; padding-top: 2rem;">
             <a href="#" id="logoutBtn" class="sidebar-link" style="color: var(--soft-red);">
-                <i class="fas fa-sign-out-alt"></i><span>Sair</span>
+                <i class="fas fa-sign-out-alt"></i><span id="navLogout">Sair</span>
             </a>
         </div>
     </div>
@@ -132,19 +135,21 @@
         <div class="d-flex justify-content-between align-items-center mb-5">
             <div>
                 <p class="mb-1"
-                    style="font-size:0.85rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--neon-blue); font-family:'Poppins',sans-serif;">
+                    style="font-size:0.85rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--neon-blue); font-family:'Poppins',sans-serif;"
+                    id="lblPanelType">
                     Painel do Terapeuta</p>
-                <h1 class="h3 mb-0">Olá, <span id="userName">Terapeuta</span> 👋</h1>
+                <h1 class="h3 mb-0"><span id="txtHello">Olá</span>, <span id="userName">Terapeuta</span> 👋</h1>
             </div>
             <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-zimy-outline btn-sm me-2" id="langToggle">EN / PT</button>
                 <div class="text-end d-none d-lg-block">
-                    <div class="fw-semibold" id="userSpecialty" style="font-size:0.9rem;">Especialidade</div>
-                    <div class="small" style="color: var(--text-dim);" id="userReg">CRP ---</div>
+                    <div class="fw-semibold" id="userNameTop" style="font-size:0.9rem;"></div>
+                    <div class="small" style="color: var(--text-dim);" id="userEmailTop"></div>
                 </div>
-                <div
-                    style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#2563EB);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                <a href="profile.html" id="userPhoto"
+                    style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#2563EB);display:flex;align-items:center;justify-content:center;font-size:1.3rem;overflow:hidden;cursor:pointer;text-decoration:none;">
                     🧑‍⚕️
-                </div>
+                </a>
             </div>
         </div>
 
@@ -155,10 +160,11 @@
                     <div class="d-flex gap-4 align-items-center">
                         <div class="stat-icon purple"><i class="fas fa-user-friends"></i></div>
                         <div>
-                            <div class="h2 mb-0 fw-bold">24</div>
-                            <div style="font-size:0.85rem; color:var(--text-dim);">Pacientes Ativos</div>
+                            <div class="h2 mb-0 fw-bold" id="statActivePatients">0</div>
+                            <div style="font-size:0.85rem; color:var(--text-dim);" id="lblActivePatients">Pacientes
+                                Ativos</div>
                         </div>
-                        <div class="ms-auto text-success small fw-semibold">+12% <i class="fas fa-arrow-up"></i></div>
+                        <div class="ms-auto text-success small fw-semibold" id="statActiveDiff">---</div>
                     </div>
                 </div>
             </div>
@@ -167,10 +173,11 @@
                     <div class="d-flex gap-4 align-items-center">
                         <div class="stat-icon blue"><i class="fas fa-comments"></i></div>
                         <div>
-                            <div class="h2 mb-0 fw-bold">156</div>
-                            <div style="font-size:0.85rem; color:var(--text-dim);">Conversas / Mês</div>
+                            <div class="h2 mb-0 fw-bold" id="statConversations">0</div>
+                            <div style="font-size:0.85rem; color:var(--text-dim);" id="lblConversations">Conversas / Mês
+                            </div>
                         </div>
-                        <div class="ms-auto" style="font-size:0.8rem; color:#60A5FA;">8 novas</div>
+                        <div class="ms-auto" style="font-size:0.8rem; color:#60A5FA;" id="statNewMsgs">0 novas</div>
                     </div>
                 </div>
             </div>
@@ -179,10 +186,11 @@
                     <div class="d-flex gap-4 align-items-center">
                         <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
                         <div>
-                            <div class="h2 mb-0 fw-bold">88%</div>
-                            <div style="font-size:0.85rem; color:var(--text-dim);">Engajamento</div>
+                            <div class="h2 mb-0 fw-bold" id="statEngagement">0%</div>
+                            <div style="font-size:0.85rem; color:var(--text-dim);" id="lblEngagement">Engajamento</div>
                         </div>
-                        <div class="ms-auto" style="font-size:0.8rem; color:var(--text-dim);">Meta: 90%</div>
+                        <div class="ms-auto" style="font-size:0.8rem; color:var(--text-dim);" id="lblGoal">Meta: ---
+                        </div>
                     </div>
                 </div>
             </div>
@@ -194,40 +202,13 @@
             <div class="col-lg-8">
                 <div class="glass-card h-100" style="padding: 2rem;">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="mb-0 fw-bold">Humor Médio do Grupo</h5>
-                        <span style="font-size:0.8rem; color:var(--text-dim); font-family:'Poppins',sans-serif;">Últimos
-                            7 dias</span>
+                        <h5 class="mb-0 fw-bold" id="lblChartTitle">Humor Médio do Grupo</h5>
+                        <span style="font-size:0.8rem; color:var(--text-dim); font-family:'Poppins',sans-serif;"
+                            id="lblChartPeriod">Últimos 7 dias</span>
                     </div>
-                    <div
+                    <div id="humorChart"
                         style="position:relative; height: 200px; display:flex; align-items:flex-end; gap:10px; padding:0 8px;">
-                        <!-- Chart Bars -->
-                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                            <div class="chart-bar" style="width:100%;height:40%;background:rgba(124,58,237,0.5);"></div>
-                            <span style="font-size:0.7rem;color:var(--text-dim);">Seg</span>
-                        </div>
-                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                            <div class="chart-bar" style="width:100%;height:65%;background:rgba(124,58,237,0.6);"></div>
-                            <span style="font-size:0.7rem;color:var(--text-dim);">Ter</span>
-                        </div>
-                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                            <div class="chart-bar" style="width:100%;height:80%;background:rgba(37,99,235,0.8);"></div>
-                            <span style="font-size:0.7rem;color:var(--text-dim);">Qua</span>
-                        </div>
-                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                            <div class="chart-bar" style="width:100%;height:55%;background:rgba(124,58,237,0.5);"></div>
-                            <span style="font-size:0.7rem;color:var(--text-dim);">Qui</span>
-                        </div>
-                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                            <div class="chart-bar" style="width:100%;height:90%;background:rgba(34,211,238,0.7);"></div>
-                            <span style="font-size:0.7rem;color:var(--text-dim);">Sex</span>
-                        </div>
-                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                            <div class="chart-bar" style="width:100%;height:70%;background:rgba(37,99,235,0.6);"></div>
-                            <span style="font-size:0.7rem;color:var(--text-dim);">Sab</span>
-                        </div>
-                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-                            <div class="chart-bar" style="width:100%;height:85%;background:rgba(34,211,238,0.8);"></div>
-                            <span style="font-size:0.7rem;color:var(--text-dim);">Dom</span>
+                        <div class="text-center w-100 opacity-50 small" id="lblChartEmpty">Aguardando dados clínicos...
                         </div>
                     </div>
                 </div>
@@ -236,35 +217,9 @@
             <!-- Alerts -->
             <div class="col-lg-4">
                 <div class="glass-card h-100" style="padding: 2rem;">
-                    <h5 class="mb-4 fw-bold">Alertas</h5>
-                    <div class="d-flex flex-column gap-3">
-                        <div class="d-flex align-items-center gap-3 p-3 rounded-3"
-                            style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.2);">
-                            <div class="alert-dot" style="background:#F87171;"></div>
-                            <div class="flex-grow-1">
-                                <div class="fw-semibold" style="font-size:0.9rem;">Bruno Souza</div>
-                                <div style="font-size:0.78rem; color:var(--text-dim);">Humor muito baixo hoje</div>
-                            </div>
-                            <a href="chat.html" class="text-white opacity-50"><i class="fas fa-chevron-right"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 p-3 rounded-3"
-                            style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.15);">
-                            <div class="alert-dot" style="background:#FBBF24;"></div>
-                            <div class="flex-grow-1">
-                                <div class="fw-semibold" style="font-size:0.9rem;">Ana Silva</div>
-                                <div style="font-size:0.78rem; color:var(--text-dim);">Missão concluída ✔</div>
-                            </div>
-                            <a href="chat.html" class="text-white opacity-50"><i class="fas fa-chevron-right"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 p-3 rounded-3"
-                            style="background:rgba(52,211,153,0.07); border:1px solid rgba(52,211,153,0.15);">
-                            <div class="alert-dot" style="background:#34D399;"></div>
-                            <div class="flex-grow-1">
-                                <div class="fw-semibold" style="font-size:0.9rem;">Carla Lins</div>
-                                <div style="font-size:0.78rem; color:var(--text-dim);">Progresso constante 🔥</div>
-                            </div>
-                            <a href="chat.html" class="text-white opacity-50"><i class="fas fa-chevron-right"></i></a>
-                        </div>
+                    <h5 class="mb-4 fw-bold" id="lblAlerts">Alertas</h5>
+                    <div class="d-flex flex-column gap-3" id="alertsContainer">
+                        <div class="text-center py-4 opacity-50 small" id="lblNoAlerts">Sem alertas no momento.</div>
                     </div>
                 </div>
             </div>
@@ -273,20 +228,24 @@
         <!-- Patients Table -->
         <div class="glass-card" style="padding: 2rem;">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="mb-0 fw-bold">Pacientes Recentes</h5>
-                <a href="chat.html" class="btn btn-zimy-outline btn-sm px-3">Ver todos</a>
+                <h5 class="mb-0 fw-bold" id="lblRecentPatients">Pacientes Recentes</h5>
+                <a href="chat.html" class="btn btn-zimy-outline btn-sm px-3" id="btnViewAll">Ver todos</a>
             </div>
             <div class="table-responsive">
                 <table class="table table-dark table-hover align-middle mb-0">
                     <thead>
                         <tr style="border-bottom:1px solid var(--glass-border);">
-                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
+                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;"
+                                id="thPatient">
                                 Paciente</th>
-                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
+                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;"
+                                id="thStatus">
                                 Status</th>
-                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
+                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;"
+                                id="thSpecialty">
                                 Especialidade</th>
-                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
+                            <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;"
+                                id="thLastSession">
                                 Última Sessão</th>
                             <th style="font-size:0.8rem;font-weight:500;color:var(--text-dim);padding-bottom:1rem;">
                             </th>
@@ -305,10 +264,107 @@
             const user = window.Zimy.db.getSession();
             if (user) {
                 document.getElementById('userName').innerText = user.name;
-                document.getElementById('userSpecialty').innerText = user.specialty;
-                document.getElementById('userReg').innerText = user.regNumber;
+
+                // Show name and email in top right
+                document.getElementById('userNameTop').innerText = user.name || '';
+                document.getElementById('userEmailTop').innerText = user.email || '';
+
+                if (user.photoURL) {
+                    document.getElementById('userPhoto').innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; object-fit:cover;">`;
+                } else if (user.initials) {
+                    document.getElementById('userPhoto').innerText = user.initials;
+                    document.getElementById('userPhoto').style.fontSize = '1.1rem';
+                    document.getElementById('userPhoto').style.color = '#fff';
+                }
             }
             renderPatientsTable();
+
+            // Language management
+            let currentLang = localStorage.getItem('zimy_lang') || 'pt';
+            const translations = {
+                pt: {
+                    // Header
+                    lblPanelType: 'Painel do Terapeuta',
+                    txtHello: 'Olá',
+                    // Sidebar
+                    navDashboard: 'Dashboard',
+                    navChat: 'Chat',
+                    navPatients: 'Pacientes',
+                    navReports: 'Relatórios',
+                    navProfile: 'Meu Perfil',
+                    navLogout: 'Sair',
+                    // Stat Cards
+                    lblActivePatients: 'Pacientes Ativos',
+                    lblConversations: 'Conversas / Mês',
+                    statNewMsgs: '0 novas',
+                    lblEngagement: 'Engajamento',
+                    lblGoal: 'Meta: ---',
+                    // Chart
+                    lblChartTitle: 'Humor Médio do Grupo',
+                    lblChartPeriod: 'Últimos 7 dias',
+                    lblChartEmpty: 'Aguardando dados clínicos...',
+                    // Alerts
+                    lblAlerts: 'Alertas',
+                    lblNoAlerts: 'Sem alertas no momento.',
+                    // Patients Table
+                    lblRecentPatients: 'Pacientes Recentes',
+                    btnViewAll: 'Ver todos',
+                    thPatient: 'Paciente',
+                    thStatus: 'Status',
+                    thSpecialty: 'Especialidade',
+                    thLastSession: 'Última Sessão',
+                    txtNoPatients: 'Nenhum paciente cadastrado ainda.'
+                },
+                en: {
+                    // Header
+                    lblPanelType: 'Therapist Dashboard',
+                    txtHello: 'Hello',
+                    // Sidebar
+                    navDashboard: 'Dashboard',
+                    navChat: 'Chat',
+                    navPatients: 'Patients',
+                    navReports: 'Reports',
+                    navProfile: 'My Profile',
+                    navLogout: 'Logout',
+                    // Stat Cards
+                    lblActivePatients: 'Active Patients',
+                    lblConversations: 'Conversations / Month',
+                    statNewMsgs: '0 new',
+                    lblEngagement: 'Engagement',
+                    lblGoal: 'Goal: ---',
+                    // Chart
+                    lblChartTitle: 'Average Group Mood',
+                    lblChartPeriod: 'Last 7 days',
+                    lblChartEmpty: 'Waiting for clinical data...',
+                    // Alerts
+                    lblAlerts: 'Alerts',
+                    lblNoAlerts: 'No alerts at the moment.',
+                    // Patients Table
+                    lblRecentPatients: 'Recent Patients',
+                    btnViewAll: 'View all',
+                    thPatient: 'Patient',
+                    thStatus: 'Status',
+                    thSpecialty: 'Specialty',
+                    thLastSession: 'Last Session',
+                    txtNoPatients: 'No patients registered yet.'
+                }
+            };
+
+            const applyLang = () => {
+                const t = translations[currentLang];
+                for (const [id, val] of Object.entries(t)) {
+                    const el = document.getElementById(id);
+                    if (el) el.innerText = val;
+                }
+                localStorage.setItem('zimy_lang', currentLang);
+            };
+
+            document.getElementById('langToggle').addEventListener('click', () => {
+                currentLang = currentLang === 'pt' ? 'en' : 'pt';
+                applyLang();
+            });
+
+            applyLang();
 
             // Stagger card entrance
             document.querySelectorAll('.glass-card').forEach((card, i) => {
@@ -324,11 +380,25 @@
 
         function renderPatientsTable() {
             const patients = window.Zimy.db.load('patients');
-            document.getElementById('patientsTableBody').innerHTML = patients.map(p => `
+            const container = document.getElementById('patientsTableBody');
+
+            if (patients.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-5 opacity-50">
+                            <i class="fas fa-user-slash fs-2 mb-3 d-block"></i>
+                            <span id="txtNoPatients">Nenhum paciente cadastrado ainda.</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            container.innerHTML = patients.map(p => `
                 <tr>
                     <td style="padding:1rem 0;">
                         <div class="d-flex align-items-center gap-3">
-                            <span style="font-size:1.6rem;">${p.emoji}</span>
+                            <span style="font-size:1.6rem;">${p.emoji || '👤'}</span>
                             <span class="fw-semibold">${p.name}</span>
                         </div>
                     </td>

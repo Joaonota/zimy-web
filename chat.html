@@ -377,6 +377,9 @@
             <a href="relatorios.html" class="sidebar-link">
                 <i class="fas fa-chart-pie"></i><span>Relatórios</span>
             </a>
+            <a href="profile.html" class="sidebar-link">
+                <i class="fas fa-user-circle"></i><span>Meu Perfil</span>
+            </a>
         </nav>
         <div style="margin-top: auto; padding-top: 2rem;">
             <a href="#" id="logoutBtn" class="sidebar-link" style="color: var(--soft-red);">
@@ -496,18 +499,29 @@
         function renderPatientList() {
             const patients = window.Zimy.db.load('patients');
             const container = document.getElementById('patientListContainer');
+
+            if (patients.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 opacity-50">
+                        <i class="fas fa-user-slash d-block mb-2"></i>
+                        <small>Sem pacientes</small>
+                    </div>
+                `;
+                return;
+            }
+
             container.innerHTML = patients.map(p => `
                 <div class="patient-item ${currentPatientId === p.id ? 'active' : ''}" 
                      onclick="selectPatient(${p.id})"
                      id="pat-${p.id}"
                      data-name="${p.name.toLowerCase()}">
                     <div class="pat-avatar">
-                        ${p.emoji}
+                        ${p.emoji || '👤'}
                         <span class="status-dot ${p.status}"></span>
                     </div>
                     <div class="pat-info">
                         <div class="pat-name">${p.name}</div>
-                        <div class="pat-last-msg">${p.lastMsg}</div>
+                        <div class="pat-last-msg">${p.lastMsg || ''}</div>
                     </div>
                     <div class="pat-meta">
                         <div>Hoje</div>

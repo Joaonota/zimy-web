@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil — Zimy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .profile-img-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7C3AED, #2563EB);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            overflow: hidden;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+            flex-shrink: 0;
+        }
+
+        .info-group {
+            margin-bottom: 2rem;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--neon-blue);
+            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            color: #F9FAFB;
+            font-weight: 500;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .profile-tag {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Decoration -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div style="margin-bottom: 3rem;">
+            <a href="dashboard.html" class="navbar-brand fs-3">
+                <span style="color: var(--neon-blue);">Zi</span>my
+            </a>
+        </div>
+        <nav class="d-flex flex-column gap-1">
+            <a href="dashboard.html" class="sidebar-link">
+                <i class="fas fa-home"></i><span>Dashboard</span>
+            </a>
+            <a href="chat.html" class="sidebar-link">
+                <i class="fas fa-comment-medical"></i><span>Chat</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <i class="fas fa-users"></i><span>Pacientes</span>
+            </a>
+            <a href="relatorios.html" class="sidebar-link">
+                <i class="fas fa-chart-pie"></i><span>Relatórios</span>
+            </a>
+            <a href="profile.html" class="sidebar-link active">
+                <i class="fas fa-user-circle"></i><span>Meu-Perfil</span>
+            </a>
+        </nav>
+        <div style="margin-top: auto; padding-top: 2rem;">
+            <a href="#" id="logoutBtn" class="sidebar-link" style="color: var(--soft-red);">
+                <i class="fas fa-sign-out-alt"></i><span>Sair</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container-fluid" style="max-width: 900px; margin: 0;">
+
+            <div class="profile-header">
+                <div class="profile-img-container" id="profileImage">
+                    🧑‍⚕️
+                </div>
+                <div>
+                    <h1 class="h2 mb-1" id="profileName">Carregando...</h1>
+                    <p class="mb-0 opacity-75" id="profileLocation">Localização</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="glass-card mb-4" style="padding: 2rem;">
+                        <h5 class="mb-4 fw-bold"><i class="fas fa-info-circle me-2"
+                                style="color: var(--neon-blue);"></i>Informações Profissionais</h5>
+
+                        <div class="row">
+                            <div class="col-sm-6 info-group">
+                                <div class="info-label">Especialidade</div>
+                                <div class="info-value" id="profileSpecialty">---</div>
+                            </div>
+                            <div class="col-sm-6 info-group">
+                                <div class="info-label">Nº de Registro</div>
+                                <div class="info-value" id="profileRegNumber">---</div>
+                            </div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Idiomas</div>
+                            <div class="tag-container" id="profileLanguages"></div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Disponibilidade</div>
+                            <div class="tag-container" id="profileAvailability"></div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Preço da Sessão</div>
+                            <div class="info-value" id="profilePrice">---</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="padding: 2rem;">
+                        <h5 class="mb-4 fw-bold"><i class="fas fa-align-left me-2"
+                                style="color: var(--neon-blue);"></i>Biografias</h5>
+
+                        <div class="info-group">
+                            <div class="info-label">Português</div>
+                            <p class="info-value" style="font-size: 0.95rem; line-height: 1.6;" id="profileBioPt">---
+                            </p>
+                        </div>
+
+                        <div class="info-group mb-0">
+                            <div class="info-label">English</div>
+                            <p class="info-value" style="font-size: 0.95rem; line-height: 1.6;" id="profileBioEn">---
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="glass-card" style="padding: 2rem;">
+                        <h5 class="mb-4 fw-bold"><i class="fas fa-envelope me-2"
+                                style="color: var(--neon-blue);"></i>Contato</h5>
+
+                        <div class="info-group">
+                            <div class="info-label">Email</div>
+                            <div class="info-value" style="font-size: 0.95rem; word-break: break-all;"
+                                id="profileEmail">---</div>
+                        </div>
+
+                        <div class="info-group mb-0">
+                            <div class="info-label">Telefone</div>
+                            <div class="info-value" id="profilePhone">---</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = window.Zimy.db.getSession();
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Populate Profile Data
+            document.getElementById('profileName').innerText = user.name || '---';
+            document.getElementById('profileEmail').innerText = user.email || '---';
+            document.getElementById('profilePhone').innerText = user.phone || '---';
+            document.getElementById('profileLocation').innerText = `${user.city || '---'}, ${user.country || '---'}`;
+            document.getElementById('profileRegNumber').innerText = user.regNumber || '---';
+            document.getElementById('profilePrice').innerText = `${user.currency || '$'} ${user.sessionPrice || '---'}`;
+            document.getElementById('profileBioPt').innerText = user.bio?.pt || '---';
+            document.getElementById('profileBioEn').innerText = user.bio?.en || '---';
+
+            // Photo / Initials fallback
+            if (user.photoURL) {
+                document.getElementById('profileImage').innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; object-fit:cover;">`;
+            } else if (user.initials) {
+                document.getElementById('profileImage').innerText = user.initials;
+            }
+
+            // Specialties
+            const specialtyContainer = document.getElementById('profileSpecialty');
+            if (Array.isArray(user.specialties)) {
+                specialtyContainer.innerText = user.specialties.join(', ');
+            }
+
+            // Languages
+            const langContainer = document.getElementById('profileLanguages');
+            if (Array.isArray(user.languages)) {
+                langContainer.innerHTML = user.languages.map(l => `<span class="profile-tag">${l}</span>`).join('');
+            }
+
+            // Availability
+            const availContainer = document.getElementById('profileAvailability');
+            const items = [];
+            if (user.availability?.online) items.push('Online');
+            if (user.availability?.presential) items.push('Presencial');
+            availContainer.innerHTML = items.map(i => `<span class="profile-tag" style="border-color:rgba(52,211,153,0.3); color:#34D399;">${i}</span>`).join('');
+        });
+    </script>
+</body>
+
+</html>
