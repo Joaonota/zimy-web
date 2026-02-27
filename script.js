@@ -22,7 +22,7 @@ if (!localStorage.getItem('zimy_cleaned_v2')) {
 function checkAuth() {
     const session = db.getSession();
     const path = window.location.pathname;
-    const isAuthPage = path.includes('login') || path.includes('signup') || path.endsWith('index.html') || path === '/' || path === '';
+    const isAuthPage = path.includes('login') || path.includes('signup') || path.includes('forgot-password') || path.endsWith('index.html') || path === '/' || path === '';
 
     if (!session && !isAuthPage) {
         window.location.href = 'login.html';
