@@ -1,14 +1,9 @@
 /**
- * Zimy Authentication System (Google-only)
+ * Zimy Authentication System (Email/Password)
  */
 
 const Auth = {
-    // Legacy support (will now fail or can be redirected)
     login: async (email, password) => {
-        return { success: false, message: "Este método de login foi desativado. Use o Google Sign-In." };
-    },
-
-    loginWithGoogle: async (idToken) => {
         const { auth, db, doc, getDoc } = window.zimyFirebase || {};
 
         if (!auth) {
@@ -17,11 +12,11 @@ const Auth = {
         }
 
         try {
-            // 1. AUTHENTICATE WITH FIREBASE AUTH VIA GOOGLE TOKEN
-            const authData = await auth.signInWithGoogle(idToken);
+            // 1. AUTHENTICATE WITH FIREBASE AUTH
+            const authData = await auth.signIn(email, password);
             const uid = authData.localId;
 
-            // 2. FETCH PROFILE FROM FIRESTORE USING UID
+            // 2. FETCH PROFILE FROM FIRESTORE
             const therapistRef = doc(db, "therapists", uid);
             const docSnap = await getDoc(therapistRef);
 
@@ -32,10 +27,14 @@ const Auth = {
                 return { success: true };
             }
 
-            return { success: false, message: "Perfil não encontrado. Por favor, realize o cadastro." };
+            return { success: false, message: "Perfil não encontrado." };
         } catch (error) {
-            console.error("Error logging in with Google: ", error);
-            return { success: false, message: "Erro ao autenticar com Google." };
+            console.error("Login error:", error);
+            let message = "Erro ao entrar.";
+            if (error.message === "INVALID_LOGIN_CREDENTIALS" || error.message === "EMAIL_NOT_FOUND" || error.message === "INVALID_PASSWORD") {
+                message = "Email ou senha incorretos.";
+            }
+            return { success: false, message: message };
         }
     },
 

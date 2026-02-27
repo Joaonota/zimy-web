@@ -1,5 +1,5 @@
 /**
- * Therapist Registration Logic (Google-only)
+ * Therapist Registration Logic (Email/Password)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,11 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNext = document.getElementById('btnNext');
     const btnBack = document.getElementById('btnBack');
 
-    // photo preview
+    // photo upload
+    const photoInput = document.getElementById('photoInput');
     const imagePreview = document.getElementById('imagePreview');
-
-    let firebaseUID = null;
-    let googleIdToken = null;
+    const cameraIcon = document.getElementById('cameraIcon');
 
     // Multi-select logic
     const setupChips = (containerId) => {
@@ -30,6 +29,19 @@ document.addEventListener('DOMContentLoaded', () => {
     setupChips('langChips');
     setupChips('specialtyChips');
 
+    // Photo Preview
+    photoInput.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                imagePreview.classList.remove('d-none');
+                cameraIcon.classList.add('d-none');
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
     // Helper to get initials
     const getInitials = (name) => {
         if (!name) return "";
@@ -38,71 +50,32 @@ document.addEventListener('DOMContentLoaded', () => {
         return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     };
 
-    const updateInitialsPreview = (name) => {
-        const initials = getInitials(name);
-        const container = document.querySelector('.profile-preview');
-        let overlay = document.getElementById('initialsOverlay');
-
-        if (!initials) {
-            if (overlay) overlay.innerText = "";
-            return;
-        }
-
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.id = 'initialsOverlay';
-            overlay.style.cssText = "position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--glass-bg); color:var(--neon-blue); font-size:2rem; font-weight:bold; border-radius:50%; border:2px solid var(--neon-blue);";
-            container.appendChild(overlay);
-        }
-
-        overlay.innerText = initials;
-    };
-
-    // Google Identity Callback
-    window.handleGoogleResponse = async (response) => {
-        const googleAuthError = document.getElementById('googleAuthError');
-        googleAuthError.classList.add('d-none');
-
-        try {
-            const { auth } = window.zimyFirebase || {};
-            if (!auth) throw new Error("Firebase Auth not initialized");
-
-            googleIdToken = response.credential;
-            const authData = await auth.signInWithGoogle(googleIdToken);
-
-            firebaseUID = authData.localId;
-            const email = authData.email;
-            const fullName = authData.displayName || "";
-            const photoURL = authData.photoUrl || "";
-
-            // Pre-fill fields
-            document.getElementById('fullName').value = fullName;
-            document.getElementById('email').value = email;
-            if (photoURL) {
-                imagePreview.src = photoURL;
-                imagePreview.classList.remove('d-none');
-            } else {
-                updateInitialsPreview(fullName);
-            }
-
-            // Show hidden fields and "Next" button
-            document.getElementById('googleDataFields').classList.remove('d-none');
-            document.querySelector('.g_id_signin').classList.add('d-none');
-            document.getElementById('googleIntro').innerText = currentLang === 'pt' ? "Conta Google conectada!" : "Google account connected!";
-
-        } catch (error) {
-            console.error("Google Auth Error:", error);
-            googleAuthError.innerText = currentLang === 'pt' ? "Erro ao autenticar com Google." : "Google auth error.";
-            googleAuthError.classList.remove('d-none');
-        }
-    };
-
     // Navigation
     btnNext.addEventListener('click', () => {
-        if (!firebaseUID) return;
-        step1.classList.remove('active');
-        step2.classList.add('active');
-        dot2.classList.add('active');
+        // Simple validation for step 1
+        const requiredFields = step1.querySelectorAll('[required]');
+        let valid = true;
+        requiredFields.forEach(field => {
+            if (!field.value) {
+                field.classList.add('is-invalid');
+                valid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        if (password !== confirmPassword) {
+            alert(currentLang === 'pt' ? 'Senhas não coincidem' : 'Passwords do not match');
+            valid = false;
+        }
+
+        if (valid) {
+            step1.classList.remove('active');
+            step2.classList.add('active');
+            dot2.classList.add('active');
+        }
     });
 
     btnBack.addEventListener('click', () => {
@@ -117,11 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
         pt: {
             titleMain: 'Criar sua Conta',
             subtitleMain: 'Comece a acompanhar seus pacientes globalmente.',
-            lblFullName: 'Nome',
-            lblEmail: 'Email',
+            lblFullName: 'Nome Completo',
+            lblEmail: 'Email Profissional',
             lblPhone: 'Telefone',
             lblCountry: 'País',
             lblCity: 'Cidade',
+            lblPassword: 'Senha',
+            lblConfirmPassword: 'Confirmar Senha',
             lblLanguages: 'Idiomas que fala',
             lblSpecialties: 'Especialidades',
             lblBioPt: 'Biografia (Português)',
@@ -137,17 +112,18 @@ document.addEventListener('DOMContentLoaded', () => {
             linkLogin: 'Entrar aqui',
             optSelectCountry: 'Selecionar país',
             uploadLabel: 'Upload',
-            lblRegNumber: 'Nº de Registro Profissional',
-            googleIntro: 'Faça login com sua conta Google para começar.'
+            lblRegNumber: 'Nº de Registro Profissional'
         },
         en: {
             titleMain: 'Create your Account',
             subtitleMain: 'Start tracking your patients globally.',
-            lblFullName: 'Name',
-            lblEmail: 'Email',
+            lblFullName: 'Full Name',
+            lblEmail: 'Professional Email',
             lblPhone: 'Phone',
             lblCountry: 'Country',
             lblCity: 'City',
+            lblPassword: 'Password',
+            lblConfirmPassword: 'Confirm Password',
             lblLanguages: 'Languages you speak',
             lblSpecialties: 'Specialties',
             lblBioPt: 'Biography (Portuguese)',
@@ -163,8 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             linkLogin: 'Login here',
             optSelectCountry: 'Select country',
             uploadLabel: 'Upload',
-            lblRegNumber: 'Professional Reg. Number',
-            googleIntro: 'Log in with your Google account to get started.'
+            lblRegNumber: 'Professional Reg. Number'
         }
     };
 
@@ -199,14 +174,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Create therapist object
-        const newTherapist = {
-            uid: firebaseUID,
+        const userData = {
             name: document.getElementById('fullName').value,
             email: document.getElementById('email').value,
             phone: document.getElementById('phone').value,
             country: document.getElementById('country').value,
             city: document.getElementById('city').value,
             regNumber: document.getElementById('regNumber').value,
+            password: document.getElementById('password').value,
             languages: selectedLangs,
             specialties: selectedSpecialties,
             bio: {
@@ -221,40 +196,48 @@ document.addEventListener('DOMContentLoaded', () => {
             currency: document.getElementById('currency').value,
             photoURL: imagePreview.classList.contains('d-none') ? null : imagePreview.src,
             initials: getInitials(document.getElementById('fullName').value),
-            createdAt: new Date().toISOString(),
-            provider: 'google.com'
-        };
-
-        const finishSignup = () => {
-            alert(currentLang === 'pt' ? 'Cadastro realizado com sucesso!' : 'Registration successful!');
-            window.location.href = 'login.html';
+            createdAt: new Date().toISOString()
         };
 
         const saveToFirestore = async () => {
             try {
-                const { db, doc, setDoc } = window.zimyFirebase || {};
+                const { auth, db, doc, setDoc } = window.zimyFirebase || {};
 
-                errorMsg.innerText = currentLang === 'pt' ? "Salvando perfil..." : "Saving profile...";
+                errorMsg.innerText = currentLang === 'pt' ? "Criando conta..." : "Creating account...";
                 errorMsg.classList.remove('d-none', 'text-danger');
                 errorMsg.classList.add('text-info');
 
-                const therapistRef = doc(db, "therapists", firebaseUID);
-                await setDoc(therapistRef, newTherapist);
+                // 1. SIGN UP WITH FIREBASE AUTH
+                const authData = await auth.signUp(userData.email, userData.password);
+                const uid = authData.localId;
 
-                finishSignup();
+                // 2. PREPARE PROFILE DATA
+                const { password: _, ...profileData } = userData;
+                profileData.uid = uid;
+
+                // 3. SAVE TO FIRESTORE
+                const therapistRef = doc(db, "therapists", uid);
+                await setDoc(therapistRef, profileData);
+
+                alert(currentLang === 'pt' ? 'Cadastro realizado com sucesso!' : 'Registration successful!');
+                window.location.href = 'login.html';
+
             } catch (error) {
-                console.error("Error during registration: ", error);
+                console.error("Registration error:", error);
                 errorMsg.classList.remove('text-info', 'd-none');
                 errorMsg.classList.add('text-danger');
-                errorMsg.innerText = currentLang === 'pt' ? "Erro ao salvar no banco de dados." : "Error saving to database.";
+
+                let message = currentLang === 'pt' ? "Erro ao realizar cadastro." : "Error during registration.";
+                if (error.message === "EMAIL_EXISTS") {
+                    message = currentLang === 'pt' ? "Este email já está cadastrado." : "Email already in use.";
+                } else if (error.message.includes("WEAK_PASSWORD")) {
+                    message = currentLang === 'pt' ? "A senha deve ter pelo menos 6 caracteres." : "Password should be at least 6 characters.";
+                }
+
+                errorMsg.innerText = message;
             }
         };
 
-        if (firebaseUID) {
-            saveToFirestore();
-        } else {
-            errorMsg.innerText = currentLang === 'pt' ? "Por favor, autentique-se primeiro." : "Please authenticate first.";
-            errorMsg.classList.remove('d-none');
-        }
+        saveToFirestore();
     });
 });
