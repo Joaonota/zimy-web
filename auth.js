@@ -22,7 +22,8 @@ const Auth = {
 
             if (docSnap && docSnap.exists) {
                 const user = docSnap.data();
-                // Store session
+                // Store session including idToken for validation
+                user.idToken = authData.idToken;
                 window.Zimy.db.setSession(user);
                 return { success: true };
             }
@@ -50,6 +51,22 @@ const Auth = {
             return !!window.Zimy.db.getSession();
         }
         return false;
+    },
+
+    verifySession: async () => {
+        const session = window.Zimy.db.getSession();
+        if (!session || !session.idToken) return false;
+
+        const { auth } = window.zimyFirebase || {};
+        if (!auth) return false;
+
+        try {
+            const result = await auth.getUserInfo(session.idToken);
+            return result.success;
+        } catch (e) {
+            console.error("Session verification failed:", e);
+            return false;
+        }
     }
 };
 

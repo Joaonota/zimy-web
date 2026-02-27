@@ -19,19 +19,31 @@ if (!localStorage.getItem('zimy_cleaned_v2')) {
 }
 
 // --- AUTH GUARDS ---
-function checkAuth() {
+async function checkAuth() {
     const session = db.getSession();
     const path = window.location.pathname;
     const isAuthPage = path.includes('login') || path.includes('signup') || path.includes('forgot-password') || path.endsWith('index.html') || path === '/' || path === '';
 
+    // 1. Basic Local Check
     if (!session && !isAuthPage) {
         window.location.href = 'login.html';
+        return;
+    }
+
+    // 2. Deep Token Validation (if session exists and we are on a protected page)
+    if (session && !isAuthPage && window.ZimyAuth) {
+        const isValid = await window.ZimyAuth.verifySession();
+        if (!isValid) {
+            console.warn("Session expired or invalid. Redirecting...");
+            db.clearSession();
+            window.location.href = 'login.html';
+        }
     }
 }
 
 // --- INITIALIZE ---
-document.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
+document.addEventListener('DOMContentLoaded', async () => {
+    await checkAuth();
 
     // Logout Functionality
     const logoutBtn = document.getElementById('logoutBtn');

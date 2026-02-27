@@ -168,6 +168,17 @@ const authRest = {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error.message);
         return data;
+    },
+
+    getUserInfo: async (idToken) => {
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseConfig.apiKey}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({ idToken })
+        });
+        const data = await response.json();
+        if (!response.ok) return { success: false };
+        return { success: true, users: data.users };
     }
 };
 
